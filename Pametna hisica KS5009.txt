@@ -1,0 +1,2 @@
+Osnovni opis: https://wiki.keyestudio.com/KS5009_Keyestudio_Smart_Home
+Navodila za sestavljanje in programiranje: https://fs.keyestudio.com/KS5009
