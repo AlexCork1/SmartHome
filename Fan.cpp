@@ -65,13 +65,13 @@ void Fan::MQTT_Message_Publish()
 /* Start fan*/
 void Fan::Start()
 {
-    _running_state = 1;
+    _running_state = true;
     ledcWrite(CHANNEL_NUMBER, FAN_ON);
 }
 
 /* stop fan  */
 void Fan::Stop()
 {
-    _running_state = 0;
+    _running_state = false;
     ledcWrite(CHANNEL_NUMBER, 0);
 }

@@ -15,14 +15,17 @@ class LEDRGB : public LED {
 
   private:
     LiteLED _rgbLights;
-    int _red_channel;
-    int _blue_channel;
-    int _green_channel;
-    const int BRIGHTNESS = 20;
+    uint16_t _red_channel;
+    uint16_t _blue_channel;
+    uint16_t _green_channel;
+    const uint8_t BRIGHTNESS = 20;
+    const uint8_t LED_TYPE_IS_RGBW = 0;
+    const uint8_t RGB_PIN = 26;
+    #define LED_TYPE        LED_STRIP_SK6812
 
     void On();
     void Off();
     void Toggle();
-    void SetColor(int led, int red, int green, int blue);
+    void SetColor(uint32_t led, uint32_t red, uint32_t green, uint32_t blue);
 
 };

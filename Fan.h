@@ -17,12 +17,12 @@ class Fan : public Device
   private:
     bool _running_state;
     
-    const int FAN_DIR1_PIN = 18;
-    const int FAN_DIR2_PIN = 19;
+    const uint8_t FAN_DIR1_PIN = 18;
+    const uint8_t FAN_DIR2_PIN = 19;
 
-    const int CHANNEL_NUMBER = 5;
-    const int FAN_OFF = 0;
-    const int FAN_ON = 127; //max speed 255
+    const uint8_t CHANNEL_NUMBER = 5;
+    const uint8_t FAN_OFF = 0;
+    const uint8_t FAN_ON = 127; //max speed 255
 
     void Start();
     void Stop();

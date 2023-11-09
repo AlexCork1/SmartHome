@@ -11,6 +11,9 @@ class LEDSingle : public LED {
     void MQTT_Message_Publish();
 
   private:
+
+    const uint8_t SINGLE_LED_PIN = 12; //YELLOW LED
+
     void On();
     void Off();
     void Toggle();

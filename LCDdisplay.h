@@ -22,9 +22,9 @@ class LCDdisplay : public Device
     LiquidCrystal_I2C _display;
     String _data_on_display[NO_ROWS];
 
-    void Write_Message(String message, uint row, uint column);
+    void Write_Message(String message, uint32_t row, uint32_t column);
     void Clear_Display();
-    void Clear_Row(uint row);
+    void Clear_Row(uint32_t row);
 
     String Get_Empty_Row() {
         String result;

@@ -12,7 +12,7 @@ LCDdisplay::LCDdisplay() :
   _display(MY_I2C_ADDRESS, LCDdisplay::NO_COLUMNS,LCDdisplay::NO_ROWS),
   EMPTY_STRING(Get_Empty_Row())
 {
-  for(int i = 0; i < NO_ROWS; i++)
+  for(uint32_t i = 0; i < NO_ROWS; i++)
     _data_on_display[i] = EMPTY_STRING;
     
   _display.init();
@@ -28,7 +28,7 @@ LCDdisplay::LCDdisplay() :
 /*###########################################################################################################################################*/
 String LCDdisplay::Get_Current_State(){
   String temp = String("");
-  for(int i = 0; i < LCDdisplay::NO_ROWS; i++){
+  for(uint32_t i = 0; i < LCDdisplay::NO_ROWS; i++){
     temp += _data_on_display[i];
     if (i != LCDdisplay::NO_ROWS-1)
       temp += '\n';
@@ -43,11 +43,11 @@ void LCDdisplay::MQTT_Message_Subscribe(String message){
   Clear_Display();
 
   String temp = message;
-  int row_to_write = 0;
+  uint32_t row_to_write = 0;
 
   while(true)
   {
-    int index_of_first = temp.indexOf('\n');
+    int32_t index_of_first = temp.indexOf('\n');
     if (index_of_first == -1) break;
 
     String subTemp = temp.substring(0, index_of_first > 16 ? 15 : index_of_first);
@@ -73,7 +73,7 @@ void LCDdisplay::MQTT_Message_Publish(){
 *
 */
 /*###########################################################################################################################################*/
-void LCDdisplay::Write_Message(String message, uint row, uint column){
+void LCDdisplay::Write_Message(String message, uint32_t row, uint32_t column){
   if (row >= NO_ROWS) return;
   if (column >= NO_COLUMNS) return;
 
@@ -81,14 +81,14 @@ void LCDdisplay::Write_Message(String message, uint row, uint column){
   _display.print(message);
 
   //update the local copy for message
-  for (int i = 0, j = column; i < message.length() && j < NO_COLUMNS; i++, j++)
+  for (int32_t i = 0, j = column; i < message.length() && j < NO_COLUMNS; i++, j++)
     _data_on_display[row][j] = message[i];
 }
 void LCDdisplay::Clear_Display(){
   for (int i = 0; i < NO_ROWS; i++) 
     Clear_Row(i);
 }
-void LCDdisplay::Clear_Row(uint row){
+void LCDdisplay::Clear_Row(uint32_t row){
   if (row >= NO_ROWS) return;
 
   _display.setCursor(0, row);

@@ -1,11 +1,6 @@
 #include "LEDRGB.h"
 #include "Debug.h"
 
-#define LED_TYPE        LED_STRIP_SK6812
-#define LED_TYPE_IS_RGBW 0
-#define RGB_PIN 26
-
-
 /*###########################################################################################################################################*/
 /*
 *
@@ -53,7 +48,7 @@ void LEDRGB::MQTT_Message_Subscribe(String message){
   }
   if (message.startsWith("SetColor")){
       //Input string: SetColor-LED-R-G-B
-      int led = 0, red = 0, green = 0, blue = 0;
+      int32_t led = 0, red = 0, green = 0, blue = 0;
       { //parse input message
         String input = message;
         String messageHeader = input.substring(0, input.indexOf('-'));
@@ -89,23 +84,23 @@ void LEDRGB::MQTT_Message_Publish(){
 */
 /*###########################################################################################################################################*/
 void LEDRGB::On(){
-  _led_state = 1;
+  _led_state = true;
   _rgbLights.brightness(BRIGHTNESS);
 }
 
 void LEDRGB::Off(){
-  _led_state = 0;
+  _led_state = false;
   _rgbLights.brightness(0);
 }
 
 void LEDRGB::Toggle(){
-  if (_led_state == 0)
+  if (_led_state == false)
     On();
   else
     Off();
 }
-void LEDRGB::SetColor(int led, int red, int green, int blue){
-  int color_to_set = ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
+void LEDRGB::SetColor(uint32_t led, uint32_t red, uint32_t green, uint32_t blue){
+  uint32_t color_to_set = ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
   Debug("Barva: "); Debugln(color_to_set)
 
   _rgbLights.setPixel(led, color_to_set, 1);
