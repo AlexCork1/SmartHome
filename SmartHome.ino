@@ -14,8 +14,10 @@ const char* mqtt_username = "smarthome_keyestudio";
 const char* mqtt_password = "smarthome_password_keyestudio";
 
 
+void IRAM_ATTR ISR_GASSenzor();
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
 OnlineConnection connectToServer(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback);
+
 
 LEDSingle ledSingle;
 LEDRGB ledRGB;
@@ -24,6 +26,7 @@ Sound sound;
 Opening door("door", 13, 13);
 Opening window("window", 5, 10);
 Fan fan;
+GasSensor gasSensor(ISR_GASSenzor);
 
 Device* list_of_devices[] = {
   &ledSingle,
@@ -32,7 +35,8 @@ Device* list_of_devices[] = {
   &sound,
   &door,
   &window,
-  &fan
+  &fan,
+  &gasSensor
 };
 
 //inicializacija
@@ -63,4 +67,17 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
       break;
     }
   }
+}
+
+
+
+/*###########################################################################################################################################*/
+/*
+ *
+ *     ISR routines
+ *
+ */
+/*###########################################################################################################################################*/
+void IRAM_ATTR ISR_GASSenzor() {
+  gasSensor.Set_Alarm();
 }

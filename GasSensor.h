@@ -1,10 +1,15 @@
 
 #include "Device.h"
+#include <atomic>
 
-class GasSenzor : public Device
+class GasSensor : public Device
 {
   public:
-    GasSenzor();
+    GasSensor(void (*ISR_GASSenzor)());
+
+    //reset
+    void Reset_Alarm();
+    void Set_Alarm();
 
     //functions dervied from Device class
     String Get_Current_State();
@@ -13,4 +18,7 @@ class GasSenzor : public Device
     void MQTT_Message_Publish();
 
   private:
+    bool gas_state;
+
+    const int8_t GAS_SENSOR_PIN = 23;
 };

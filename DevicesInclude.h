@@ -5,3 +5,4 @@
 #include "Sound.h"
 #include "Opening.h"
 #include "Fan.h"
+#include "GasSensor.h"
