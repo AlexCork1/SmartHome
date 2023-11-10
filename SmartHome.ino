@@ -4,14 +4,19 @@
 #include "inc/OnlineConnection.h"
 #include "inc/DevicesInclude.h"
 
-//data for access point connection
-const char* ssid = "";      //WiFi names
-const char* password = "";	//WiFi password
+/*
+This file is not uploaded on github. You need to add it and fill it with following information:
 
-//data for MQTT server connection
-const char* mqtt_server = "broker.hivemq.com";
-const char* mqtt_username = "smarthome_keyestudio";
-const char* mqtt_password = "smarthome_password_keyestudio";
+  Data to connect to access point:
+    - const char* ssid          ->  WiFi name
+    - const char* password      ->	WiFi password
+
+  Data to connect to MQTT server:
+    - const char* mqtt_server   -> URL to MQTT broker
+    - const char* mqtt_username -> MQTT broker username
+    - const char* mqtt_password -> MQTT broker password
+*/
+#include "secrets.h"
 
 //function prototypes
 void IRAM_ATTR ISR_GASSensor();
