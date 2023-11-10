@@ -9,3 +9,4 @@
 #include "Button.h"
 #include "SteamSensor.h"
 #include "MovementSensor.h"
+#include "RFIDSensor.h"
