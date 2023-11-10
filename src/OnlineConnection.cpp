@@ -1,5 +1,5 @@
-#include "../includes/OnlineConnection.h"
-#include "../includes/Debug.h"
+#include "../inc/OnlineConnection.h"
+#include "../inc/Debug.h"
 
 /*###########################################################################################################################################*/
 /*
