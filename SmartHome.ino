@@ -1,8 +1,8 @@
 #define DEBUG
 
-#include "Debug.h"
-#include "OnlineConnection.h"
-#include "DevicesInclude.h"
+#include "includes/Debug.h"
+#include "includes/OnlineConnection.h"
+#include "includes/DevicesInclude.h"
 
 //data for access point connection
 const char* ssid = "";      //WiFi names

@@ -1,4 +1,4 @@
-#include "SteamSensor.h"
+#include "../includes/GasSensor.h"
 
 /*###########################################################################################################################################*/
 /*
@@ -7,9 +7,14 @@
  *
  */
 /*###########################################################################################################################################*/
-SteamSensor::SteamSensor()
+GasSensor::GasSensor(void (*ISR_GASSensor)())
 {
+    pinMode(GAS_SENSOR_PIN, INPUT);
 
+    Reset_Alarm();
+
+    // we will use isr approach
+    attachInterrupt(digitalPinToInterrupt(GAS_SENSOR_PIN), ISR_GASSensor, FALLING);
 }
 
 /*###########################################################################################################################################*/
@@ -19,27 +24,32 @@ SteamSensor::SteamSensor()
  *
  */
 /*###########################################################################################################################################*/
-int32_t SteamSensor::Get_Data(){
-    _data = analogRead(STEAM_SENSOR_PIN);
-    return _data;
-}
-/* return single LED state as String */
-String SteamSensor::Get_Current_State()
+
+void GasSensor::Reset_Alarm()
 {
-    return String(_data);
+    gas_state = false;
+}
+void GasSensor::Set_Alarm(){
+    gas_state = true;
+}
+
+/* return single LED state as String */
+String GasSensor::Get_Current_State()
+{
+    return String(gas_state);
 }
 /* return single LED MQTT topic as String */
-String SteamSensor::MQTT_Get_topic()
+String GasSensor::MQTT_Get_topic()
 {
-    return "steam";
+    return "gas";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
-void SteamSensor::MQTT_Message_Subscribe(String message)
+void GasSensor::MQTT_Message_Subscribe(String message)
 {
     // NOTHING - it is only send data
 }
-void SteamSensor::MQTT_Message_Publish()
+void GasSensor::MQTT_Message_Publish()
 {
     // TODO
     // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());

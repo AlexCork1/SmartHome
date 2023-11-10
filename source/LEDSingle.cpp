@@ -1,67 +1,79 @@
-#include "MovementSensor.h"
+#include "../includes/Debug.h"
+#include "../includes/LEDSingle.h"
 
 /*###########################################################################################################################################*/
 /*
- *
- *     CONSTRUCTORS
- *
- */
+*
+*     CONSTRUCTORS
+*
+*/
 /*###########################################################################################################################################*/
-MovementSensor::MovementSensor(void (*ISR_MovementSensor)())
-{
-    pinMode(PIR_SENSOR_PIN, INPUT);
-
-    Reset();
-
-    // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(PIR_SENSOR_PIN), ISR_MovementSensor, RISING);
+LEDSingle::LEDSingle(){
+  _led_state = 0;
+  pinMode(SINGLE_LED_PIN, OUTPUT);
 }
 
 /*###########################################################################################################################################*/
 /*
- *
- *     PUBLIC methods
- *
- */
+*
+*     PUBLIC methods
+*
+*/
 /*###########################################################################################################################################*/
-
-void MovementSensor::Reset()
-{
-    _move_detected = false;
-}
-void MovementSensor::Detected(){
-    _move_detected = true;
-}
-
 /* return single LED state as String */
-String MovementSensor::Get_Current_State()
-{
-    return String(_move_detected);
+String LEDSingle::Get_Current_State(){
+  return String(_led_state);
 }
 /* return single LED MQTT topic as String */
-String MovementSensor::MQTT_Get_topic()
-{
-    return "movement";
+String LEDSingle::MQTT_Get_topic(){
+  return String("ledSingle");
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
-void MovementSensor::MQTT_Message_Subscribe(String message)
-{
-    // NOTHING - it is only send data
+void LEDSingle::MQTT_Message_Subscribe(String message){
+  if (message == "On"){
+    On();
+    return;
+  }
+
+  if (message == "Off"){
+    Off();
+    return;
+  }
+    
+  if (message == "Toggle"){
+    Toggle();
+    return;
+  }
 }
-void MovementSensor::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
+void LEDSingle::MQTT_Message_Publish(){
+  //TODO
+  //MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/
 /*
- *
- *     PRIVATE methods
- *
- */
+*
+*     PRIVATE methods
+*
+*/
 /*###########################################################################################################################################*/
+/* Turn the single LED on */
+void LEDSingle::On(){
+  _led_state = 1;
+  digitalWrite(SINGLE_LED_PIN, HIGH);
+}
 
+/* Turn the single LED off */
+void LEDSingle::Off(){
+  _led_state = 0;
+  digitalWrite(SINGLE_LED_PIN, LOW);
+}
 
-
+/* Toggle the state of the single LED */
+void LEDSingle::Toggle(){
+  if (_led_state == 0)
+    On();
+  else
+    Off();
+}
