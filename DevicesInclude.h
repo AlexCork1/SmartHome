@@ -8,3 +8,4 @@
 #include "GasSensor.h"
 #include "Button.h"
 #include "SteamSensor.h"
+#include "MovementSensor.h"

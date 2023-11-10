@@ -17,6 +17,7 @@ const char* mqtt_password = "smarthome_password_keyestudio";
 void IRAM_ATTR ISR_GASSensor();
 void IRAM_ATTR ISR_ButtonLeft_Click();
 void IRAM_ATTR ISR_ButtonRight_Click();
+void IRAM_ATTR ISR_MovementSensor();
 
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
 OnlineConnection connectToServer(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback);
@@ -33,6 +34,7 @@ GasSensor gasSensor(ISR_GASSensor);
 Button buttonLeft("button_left", 16, ISR_ButtonLeft_Click);
 Button buttonRight("button_right", 27, ISR_ButtonRight_Click);
 SteamSensor steam;
+MovementSensor movement(ISR_MovementSensor);
 
 Device* list_of_devices[] = {
   &ledSingle,
@@ -45,7 +47,8 @@ Device* list_of_devices[] = {
   &gasSensor,
   &buttonLeft,
   &buttonRight,
-  &steam
+  &steam,
+  &movement
 };
 
 //inicializacija
@@ -97,4 +100,7 @@ void IRAM_ATTR ISR_ButtonLeft_Click() {
 }
 void IRAM_ATTR ISR_ButtonRight_Click() {
   buttonRight.Pressed();
+}
+void IRAM_ATTR ISR_MovementSensor() {
+  movement.Detected();
 }
