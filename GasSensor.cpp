@@ -7,14 +7,14 @@
  *
  */
 /*###########################################################################################################################################*/
-GasSensor::GasSensor(void (*ISR_GASSenzor)())
+GasSensor::GasSensor(void (*ISR_GASSensor)())
 {
     pinMode(GAS_SENSOR_PIN, INPUT);
 
     Reset_Alarm();
 
     // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(GAS_SENSOR_PIN), ISR_GASSenzor, FALLING);
+    attachInterrupt(digitalPinToInterrupt(GAS_SENSOR_PIN), ISR_GASSensor, FALLING);
 }
 
 /*###########################################################################################################################################*/

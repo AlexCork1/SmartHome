@@ -4,7 +4,7 @@
 class GasSensor : public Device
 {
   public:
-    GasSensor(void (*ISR_GASSenzor)());
+    GasSensor(void (*ISR_GASSensor)());
 
     //reset
     void Reset_Alarm();
