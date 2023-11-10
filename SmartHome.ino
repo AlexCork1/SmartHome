@@ -13,12 +13,12 @@ const char* mqtt_server = "broker.hivemq.com";
 const char* mqtt_username = "smarthome_keyestudio";
 const char* mqtt_password = "smarthome_password_keyestudio";
 
-
+//function prototypes
 void IRAM_ATTR ISR_GASSenzor();
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
 OnlineConnection connectToServer(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback);
 
-
+//variables
 LEDSingle ledSingle;
 LEDRGB ledRGB;
 LCDdisplay lcdDisplay;
@@ -42,8 +42,10 @@ Device* list_of_devices[] = {
 //inicializacija
 void setup()
 {
+  #ifdef DEBUG
   for (Device* device : list_of_devices)
     Debugln(device->MQTT_Get_topic() + " " + device->Get_Current_State());
+  #endif
 }
 
 void loop()
