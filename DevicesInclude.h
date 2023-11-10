@@ -7,3 +7,4 @@
 #include "Fan.h"
 #include "GasSensor.h"
 #include "Button.h"
+#include "SteamSensor.h"
