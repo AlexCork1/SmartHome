@@ -36,6 +36,7 @@ Button buttonRight("button_right", 27, ISR_ButtonRight_Click);
 SteamSensor steam;
 MovementSensor movement(ISR_MovementSensor);
 RFIDSensor rfid;
+TempHumSensor tempHum;
 
 Device* list_of_devices[] = {
   &ledSingle,
@@ -50,7 +51,8 @@ Device* list_of_devices[] = {
   &buttonRight,
   &steam,
   &movement,
-  &rfid
+  &rfid,
+  &tempHum
 };
 
 //inicializacija

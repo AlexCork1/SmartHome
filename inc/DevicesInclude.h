@@ -10,3 +10,4 @@
 #include "SteamSensor.h"
 #include "MovementSensor.h"
 #include "RFIDSensor.h"
+#include "TempHumSensor.h"
