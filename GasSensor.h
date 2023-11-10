@@ -1,6 +1,5 @@
 
 #include "Device.h"
-#include <atomic>
 
 class GasSensor : public Device
 {

@@ -1,6 +1,3 @@
-#ifndef MOTOR_DATA_H
-#define MOTOR_DATA_H
-
 #include "Device.h"
 
 class Opening : public Device
@@ -28,4 +25,3 @@ class Opening : public Device
     void Open();
     void Close();
 };
-#endif
