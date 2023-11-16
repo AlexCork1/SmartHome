@@ -8,7 +8,7 @@
 *
 */
 /*###########################################################################################################################################*/
-LEDSingle::LEDSingle(){
+LEDSingle::LEDSingle(String topic, void (*mqtt_publish)(String, String)) : LED(topic, mqtt_publish){
   _led_state = 0;
   pinMode(SINGLE_LED_PIN, OUTPUT);
 }
@@ -23,10 +23,6 @@ LEDSingle::LEDSingle(){
 /* return single LED state as String */
 String LEDSingle::Get_Current_State(){
   return String(_led_state);
-}
-/* return single LED MQTT topic as String */
-String LEDSingle::MQTT_Get_topic(){
-  return String("ledSingle");
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

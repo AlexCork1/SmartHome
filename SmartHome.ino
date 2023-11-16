@@ -1,5 +1,3 @@
-#define DEBUG
-
 #include "inc/Debug.h"
 #include "inc/OnlineConnection.h"
 #include "inc/DevicesInclude.h"
@@ -25,23 +23,25 @@ void IRAM_ATTR ISR_ButtonRight_Click();
 void IRAM_ATTR ISR_MovementSensor();
 
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
-OnlineConnection connectToServer(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback);
+void MQTT_message_publish(String topic, String message);
+
+OnlineConnection connectToServer;
 
 //variables
-LEDSingle ledSingle;
-LEDRGB ledRGB;
-LCDdisplay lcdDisplay;
-Sound sound;
-Opening door("door", 13, 13);
-Opening window("window", 5, 10);
-Fan fan;
-GasSensor gasSensor(ISR_GASSensor);
-Button buttonLeft("button_left", 16, ISR_ButtonLeft_Click);
-Button buttonRight("button_right", 27, ISR_ButtonRight_Click);
-SteamSensor steam;
-MovementSensor movement(ISR_MovementSensor);
-RFIDSensor rfid;
-TempHumSensor tempHum;
+LEDSingle ledSingle("ledSingle", MQTT_message_publish);
+LEDRGB ledRGB("ledRGB", MQTT_message_publish);
+LCDdisplay lcdDisplay("lcd", MQTT_message_publish);
+Sound sound("sound", MQTT_message_publish);
+Opening door("door", 13, 13, MQTT_message_publish);
+Opening window("window", 5, 10, MQTT_message_publish);
+Fan fan("fan", MQTT_message_publish);
+GasSensor gasSensor("gas", ISR_GASSensor, MQTT_message_publish);
+Button buttonLeft("button_left", 16, ISR_ButtonLeft_Click, MQTT_message_publish);
+Button buttonRight("button_right", 27, ISR_ButtonRight_Click, MQTT_message_publish);
+SteamSensor steam("steam", MQTT_message_publish);
+MovementSensor movement("movement", ISR_MovementSensor, MQTT_message_publish);
+RFIDSensor rfid("rfid", MQTT_message_publish);
+TempHumSensor tempHum("temphum", MQTT_message_publish);
 
 Device* list_of_devices[] = {
   &ledSingle,
@@ -60,18 +60,24 @@ Device* list_of_devices[] = {
   &tempHum
 };
 
+
 //inicializacija
 void setup()
-{
-  #ifdef DEBUG
-  for (Device* device : list_of_devices)
-    Debugln(device->MQTT_Get_topic() + " " + device->Get_Current_State());
-  #endif
+{ 
+  Debug_Init();
+  Debugln("done");
+
+  connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback);
+  for(auto device : list_of_devices)
+    connectToServer.RegisterTopic(device->Get_MQTT_topic());
+
+  Debugln("setup end");
 }
 
 void loop()
 {
   connectToServer.Loop();
+  delay(50);
 }
 
 
@@ -81,17 +87,25 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
   String topicStr = String(topic);
   String message;
   for (uint32_t i = 0; i < length; i++) message += (char)messageByte[i];
+
+  Serial.print(topicStr); Serial.print(" "); Serial.println(message);
+  
   Debug(topicStr); Debug(" "); Debugln(message);
 
   //find correct device for recevied message
   for (Device* device : list_of_devices){
-    if (device->MQTT_Get_topic() == String(topic)){
+    if (device->Get_MQTT_topic() == String(topic)){
       device->MQTT_Message_Subscribe(message);
       break;
     }
   }
 }
 
+//MQTT publish function
+void MQTT_message_publish(String topic, String message)
+{
+  connectToServer.Publish(topic, message);
+}
 
 
 /*###########################################################################################################################################*/
@@ -101,15 +115,16 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
  *
  */
 /*###########################################################################################################################################*/
+
 void IRAM_ATTR ISR_GASSensor() {
-  gasSensor.Set_Alarm();
+  //gasSensor.Set_Alarm();
 }
 void IRAM_ATTR ISR_ButtonLeft_Click() {
-  buttonLeft.Pressed();
+  //buttonLeft.Pressed();
 }
 void IRAM_ATTR ISR_ButtonRight_Click() {
-  buttonRight.Pressed();
+  //buttonRight.Pressed();
 }
 void IRAM_ATTR ISR_MovementSensor() {
-  movement.Detected();
+  //movement.Detected();
 }

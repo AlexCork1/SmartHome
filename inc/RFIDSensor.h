@@ -8,12 +8,11 @@
 class RFIDSensor : public Device
 {
   public:
-    RFIDSensor();
+    RFIDSensor(String topic, void (*mqtt_publish)(String, String));
     String Read();
 
     //functions dervied from Device class
     String Get_Current_State();
-    String MQTT_Get_topic();
     void MQTT_Message_Subscribe(String message);
     void MQTT_Message_Publish(); 
   private:

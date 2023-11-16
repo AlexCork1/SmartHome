@@ -9,10 +9,13 @@
  */
 /*###########################################################################################################################################*/
 Opening::Opening(
-    String openning_description,
+    String topic,
     uint8_t pin_number,
-    uint32_t channel_number) : 
-    _pin_number(pin_number), _opening_desc(openning_description), _channel_number(channel_number)
+    uint32_t channel_number,
+    void (*mqtt_publish)(String, String)) :
+    Device(topic, mqtt_publish),
+    _pin_number(pin_number),
+    _channel_number(channel_number)
 {
     ledcSetup(_channel_number, FREQUENCY, RESOLUTION);
     ledcAttachPin(_pin_number, _channel_number);
@@ -30,11 +33,6 @@ Opening::Opening(
 String Opening::Get_Current_State()
 {
     return String(_opening_state);
-}
-/* return single LED MQTT topic as String */
-String Opening::MQTT_Get_topic()
-{
-    return _opening_desc;
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

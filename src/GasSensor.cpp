@@ -7,7 +7,8 @@
  *
  */
 /*###########################################################################################################################################*/
-GasSensor::GasSensor(void (*ISR_GASSensor)())
+GasSensor::GasSensor(String topic, void (*ISR_GASSensor)(), void (*mqtt_publish)(String, String)) :
+    Device(topic, mqtt_publish)
 {
     pinMode(GAS_SENSOR_PIN, INPUT);
 
@@ -37,11 +38,6 @@ void GasSensor::Set_Alarm(){
 String GasSensor::Get_Current_State()
 {
     return String(gas_state);
-}
-/* return single LED MQTT topic as String */
-String GasSensor::MQTT_Get_topic()
-{
-    return "gas";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

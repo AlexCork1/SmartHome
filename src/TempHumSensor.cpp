@@ -8,7 +8,12 @@
  *
  */
 /*###########################################################################################################################################*/
-TempHumSensor::TempHumSensor() : _dht(TEMP_SENZOR_PIN, DHTTYPE), _temperature(0), _humidity(0)
+TempHumSensor::TempHumSensor(
+    String topic,
+    void (*mqtt_publish)(String, String)
+    ) : 
+    Device(topic, mqtt_publish),
+    _dht(TEMP_SENZOR_PIN, DHTTYPE), _temperature(0), _humidity(0)
 {
     _dht.begin();
 }
@@ -48,10 +53,6 @@ bool TempHumSensor::Read_Humidity(){
 String TempHumSensor::Get_Current_State()
 {
     return String("temp:") + String(_temperature) + String(";") + String("hum:") + String(_humidity);
-}
-String TempHumSensor::MQTT_Get_topic()
-{
-    return String("temphum");
 }
 void TempHumSensor::MQTT_Message_Subscribe(String message)
 {

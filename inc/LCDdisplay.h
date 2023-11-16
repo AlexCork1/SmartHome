@@ -5,14 +5,13 @@
 class LCDdisplay : public Device
 {
   public:
-    LCDdisplay();
+    LCDdisplay(String topic, void (*mqtt_publish)(String, String));
     static const int MY_I2C_ADDRESS = 0x27;
     static const int NO_ROWS = 2;
     static const int NO_COLUMNS = 16;
 
     //functions dervied from Device class
     String Get_Current_State();
-    String MQTT_Get_topic();
     void MQTT_Message_Subscribe(String message);
     void MQTT_Message_Publish();
 

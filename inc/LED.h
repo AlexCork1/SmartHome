@@ -6,6 +6,7 @@
 class LED : public Device
 {
   public:
+    LED(String topic, void (*mqtt_publish)(String, String)) : Device(topic, mqtt_publish){}
     virtual void On() = 0;
     virtual void Off() = 0;
     virtual void Toggle() = 0;

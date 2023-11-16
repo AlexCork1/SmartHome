@@ -7,9 +7,11 @@
 class OnlineConnection
 {
   public:
-    OnlineConnection(const char* ssid, const char* password, const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, void (*mqttCallback)(char*, byte*, unsigned int));
+    OnlineConnection();
+    void Init(const char* ssid, const char* password, const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, void (*mqttCallback)(char*, byte*, unsigned int));
     void Loop();
-    void MQTT_Publish_Message(const char* topic, const char* message);
+    void Publish(String topic, String message);
+    void RegisterTopic(String topic);
 
   private:
     WiFiClient _espClient; //used to connect to WiFi

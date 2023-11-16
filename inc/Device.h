@@ -5,7 +5,7 @@
 class Device
 {
   public:
-    Device(String topic) : _mqttTopic(topic){}
+    Device(String topic, void (*mqtt_publish)(String, String)) : _mqttTopic(topic), _mqtt_publish(mqtt_publish){}
     String Get_MQTT_topic() { return _mqttTopic; }
 
     virtual String Get_Current_State() = 0; //used to send current state of all devices to MQTT server
@@ -14,6 +14,7 @@ class Device
 
   private:
     String _mqttTopic;
+    void (*_mqtt_publish)(String, String);
 };
 
 #endif

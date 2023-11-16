@@ -7,7 +7,8 @@
  *
  */
 /*###########################################################################################################################################*/
-SteamSensor::SteamSensor()
+SteamSensor::SteamSensor(String topic, void (*mqtt_publish)(String, String)) :
+    Device(topic, mqtt_publish)
 {
 
 }
@@ -27,11 +28,6 @@ int32_t SteamSensor::Get_Data(){
 String SteamSensor::Get_Current_State()
 {
     return String(_data);
-}
-/* return single LED MQTT topic as String */
-String SteamSensor::MQTT_Get_topic()
-{
-    return "steam";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

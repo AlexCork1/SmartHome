@@ -14,10 +14,10 @@ struct MelodyMapping {
 class Sound : public Device
 {
   public:
-    Sound();
+    Sound(String topic, void (*mqtt_publish)(String, String));
+    
     //functions dervied from Device class
     String Get_Current_State();
-    String MQTT_Get_topic();
     void MQTT_Message_Subscribe(String message);
     void MQTT_Message_Publish();
 

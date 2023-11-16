@@ -7,7 +7,12 @@
  *
  */
 /*###########################################################################################################################################*/
-MovementSensor::MovementSensor(void (*ISR_MovementSensor)())
+MovementSensor::MovementSensor(
+    String topic,
+    void (*ISR_MovementSensor)(),
+    void (*mqtt_publish)(String, String)) :
+
+    Device(topic, mqtt_publish)
 {
     pinMode(PIR_SENSOR_PIN, INPUT);
 
@@ -37,11 +42,6 @@ void MovementSensor::Detected(){
 String MovementSensor::Get_Current_State()
 {
     return String(_move_detected);
-}
-/* return single LED MQTT topic as String */
-String MovementSensor::MQTT_Get_topic()
-{
-    return "movement";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

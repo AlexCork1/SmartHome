@@ -4,7 +4,7 @@
 class GasSensor : public Device
 {
   public:
-    GasSensor(void (*ISR_GASSensor)());
+    GasSensor(String topic, void (*ISR_GASSensor)(), void (*mqtt_publish)(String, String));
 
     //reset
     void Reset_Alarm();
@@ -12,7 +12,6 @@ class GasSensor : public Device
 
     //functions dervied from Device class
     String Get_Current_State();
-    String MQTT_Get_topic();
     void MQTT_Message_Subscribe(String message);
     void MQTT_Message_Publish();
 

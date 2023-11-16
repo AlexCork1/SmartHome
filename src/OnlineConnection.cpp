@@ -8,16 +8,20 @@
 *
 */
 /*###########################################################################################################################################*/
-OnlineConnection::OnlineConnection(const char* ssid, const char* password, const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, void (*mqttCallback)(char*, byte*, unsigned int)) : 
-  _espClient(),
-  _client(_espClient),
-  _ssid(ssid),
-  _password(password),
-  _mqtt_server(mqtt_server),
-  _mqtt_username(mqtt_username),
-  _mqtt_password(mqtt_password),
-  _mqtt_callback(mqttCallback)
+OnlineConnection::OnlineConnection() : _espClient(), _client(_espClient)
 {
+}
+
+void OnlineConnection::Init(const char* SSID, const char* password, const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, void (*mqttCallback)(char*, byte*, unsigned int))  
+{
+    Debugln("OnlineConnection ::: Init");
+    _ssid = SSID;
+    _password = password;
+    _mqtt_server = mqtt_server;
+    _mqtt_username = mqtt_username;
+    _mqtt_password = mqtt_password;
+    _mqtt_callback = mqttCallback;
+ 
     WiFi_Connect();
     MQTT_Connect();
 }
@@ -29,6 +33,7 @@ OnlineConnection::OnlineConnection(const char* ssid, const char* password, const
 *
 */
 /*###########################################################################################################################################*/
+
 /* Loop method to check for WiFi and MQTT connections and library loop. MUST be inside loop() function of main program */
 void OnlineConnection::Loop(){
   if(WiFi.status() != WL_CONNECTED)
@@ -39,9 +44,15 @@ void OnlineConnection::Loop(){
     
   _client.loop();
 }
+
 /* Send message to MQTT server with specific topic */
-void OnlineConnection::MQTT_Publish_Message(const char* topic, const char* message){
-  _client.publish(topic, message);
+void OnlineConnection::Publish(String topic, String message){
+  _client.publish(topic.c_str(), message.c_str());
+}
+
+/* We need to register each topic we wish to listent to */
+void OnlineConnection::RegisterTopic(String topic){
+  _client.subscribe(topic.c_str());
 }
 
 /*###########################################################################################################################################*/
@@ -53,7 +64,8 @@ void OnlineConnection::MQTT_Publish_Message(const char* topic, const char* messa
 /*###########################################################################################################################################*/
 /* Connect to access point */
 void OnlineConnection::WiFi_Connect(){
-  Debug("Povezava na "); Debugln(ssid);
+  Serial.print("Connecting to "); 
+  Serial.println(_ssid);
   
   WiFi.mode(WIFI_STA);
   WiFi.begin(_ssid, _password);
@@ -61,7 +73,7 @@ void OnlineConnection::WiFi_Connect(){
   //wait for WiFi to connect
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Debug(".");
+    Debug("-");
   }
   Debugln();
 

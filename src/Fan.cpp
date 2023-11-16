@@ -8,7 +8,8 @@
  *
  */
 /*###########################################################################################################################################*/
-Fan::Fan()
+Fan::Fan(String topic, void (*mqtt_publish)(String, String)) :
+    Device(topic, mqtt_publish)
 {
     pinMode(FAN_DIR1_PIN, OUTPUT);
     pinMode(FAN_DIR2_PIN, OUTPUT);
@@ -34,11 +35,6 @@ Fan::Fan()
 String Fan::Get_Current_State()
 {
     return String(_running_state);
-}
-/* return single LED MQTT topic as String */
-String Fan::MQTT_Get_topic()
-{
-    return "fan";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

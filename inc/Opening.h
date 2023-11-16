@@ -3,17 +3,15 @@
 class Opening : public Device
 {
   public:
-    Opening(String opening_description, uint8_t pin_number, uint32_t channel_number);
+    Opening(String topic, uint8_t pin_number, uint32_t channel_number, void (*mqtt_publish)(String, String));
 
     //functions dervied from Device class
     String Get_Current_State();
-    String MQTT_Get_topic();
     void MQTT_Message_Subscribe(String message);
     void MQTT_Message_Publish();
 
   private:
     bool _opening_state;
-    String _opening_desc;
     uint8_t _pin_number;
     uint32_t _channel_number;
 

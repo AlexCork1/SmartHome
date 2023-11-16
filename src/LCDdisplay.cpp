@@ -8,7 +8,8 @@
 *
 */
 /*###########################################################################################################################################*/
-LCDdisplay::LCDdisplay() : 
+LCDdisplay::LCDdisplay(String topic, void (*mqtt_publish)(String, String)) :
+  Device(topic, mqtt_publish),
   _display(MY_I2C_ADDRESS, LCDdisplay::NO_COLUMNS,LCDdisplay::NO_ROWS),
   EMPTY_STRING(Get_Empty_Row())
 {
@@ -34,9 +35,6 @@ String LCDdisplay::Get_Current_State(){
       temp += '\n';
   }
   return temp;
-}
-String LCDdisplay::MQTT_Get_topic(){
-  return String("lcd");
 }
 void LCDdisplay::MQTT_Message_Subscribe(String message){
 	//LCD display is composed of N rows and 16 columns

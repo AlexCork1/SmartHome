@@ -8,7 +8,7 @@
 *
 */
 /*###########################################################################################################################################*/
-LEDRGB::LEDRGB() : _rgbLights(LED_TYPE, LED_TYPE_IS_RGBW){
+LEDRGB::LEDRGB(String topic, void (*mqtt_publish)(String, String)) : LED(topic, mqtt_publish), _rgbLights(LED_TYPE, LED_TYPE_IS_RGBW){
   _led_state = 0;
   _red_channel = 0;
   _blue_channel = 0;
@@ -27,9 +27,6 @@ LEDRGB::LEDRGB() : _rgbLights(LED_TYPE, LED_TYPE_IS_RGBW){
 /*###########################################################################################################################################*/
 String LEDRGB::Get_Current_State(){
   return String(_led_state) + "-" + String(_red_channel) + "-" + String(_green_channel) + "," + String(_blue_channel);
-}
-String LEDRGB::MQTT_Get_topic(){
-  return String("ledRGB");
 }
 void LEDRGB::MQTT_Message_Subscribe(String message){
   if (message == "On"){
@@ -99,9 +96,10 @@ void LEDRGB::Toggle(){
   else
     Off();
 }
-void LEDRGB::SetColor(uint32_t led, uint32_t red, uint32_t green, uint32_t blue){
+void LEDRGB::SetColor(uint32_t led, uint32_t red, uint32_t green, uint32_t blue)
+{
   uint32_t color_to_set = ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
-  Debug("Barva: "); Debugln(color_to_set)
+  Debug("Barva: "); Debugln(color_to_set);
 
   _rgbLights.setPixel(led, color_to_set, 1);
   On();

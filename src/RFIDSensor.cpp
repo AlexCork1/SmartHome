@@ -9,7 +9,11 @@
  *
  */
 /*###########################################################################################################################################*/
-RFIDSensor::RFIDSensor() : 
+RFIDSensor::RFIDSensor(
+    String topic,
+    void (*mqtt_publish)(String, String)
+    ) :
+    Device(topic, mqtt_publish), 
     _mfrc522(MY_I2C_ADDRESS_RFID)
 {
     Wire.begin();        // initialize I2C
@@ -46,10 +50,6 @@ String RFIDSensor::Read()
 String RFIDSensor::Get_Current_State()
 {
     // TODO
-}
-String RFIDSensor::MQTT_Get_topic()
-{
-    return String("rfid");
 }
 void RFIDSensor::MQTT_Message_Subscribe(String message)
 {
