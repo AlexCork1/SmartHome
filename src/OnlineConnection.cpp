@@ -12,7 +12,14 @@ OnlineConnection::OnlineConnection() : _espClient(), _client(_espClient)
 {
 }
 
-void OnlineConnection::Init(const char* SSID, const char* password, const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, void (*mqttCallback)(char*, byte*, unsigned int))  
+void OnlineConnection::Init(
+  const char* SSID,
+  const char* password,
+  const char* mqtt_server,
+  const char* mqtt_username,
+  const char* mqtt_password,
+  void (*mqtt_callback)(char*, byte*, unsigned int),
+  void (*mqtt_register_topics)()) 
 {
     Debugln("OnlineConnection ::: Init");
     _ssid = SSID;
@@ -20,7 +27,8 @@ void OnlineConnection::Init(const char* SSID, const char* password, const char* 
     _mqtt_server = mqtt_server;
     _mqtt_username = mqtt_username;
     _mqtt_password = mqtt_password;
-    _mqtt_callback = mqttCallback;
+    _mqtt_callback = mqtt_callback;
+    _mqtt_register_topics_function = mqtt_register_topics;
  
     WiFi_Connect();
     MQTT_Connect();
@@ -47,7 +55,8 @@ void OnlineConnection::Loop(){
 
 /* Send message to MQTT server with specific topic */
 void OnlineConnection::Publish(String topic, String message){
-  _client.publish(topic.c_str(), message.c_str());
+  String topicJoined = "/smarthome/" + topic;
+  _client.publish(topicJoined.c_str(), message.c_str());
 }
 
 /* We need to register each topic we wish to listent to */
@@ -64,8 +73,8 @@ void OnlineConnection::RegisterTopic(String topic){
 /*###########################################################################################################################################*/
 /* Connect to access point */
 void OnlineConnection::WiFi_Connect(){
-  Serial.print("Connecting to "); 
-  Serial.println(_ssid);
+  Debug("Connecting to "); 
+  Debugln(_ssid);
   
   WiFi.mode(WIFI_STA);
   WiFi.begin(_ssid, _password);
@@ -119,6 +128,8 @@ void OnlineConnection::MQTT_Reconnect(){
     //try to connect with username and password
     if (_client.connect(clientId.c_str(), _mqtt_username, _mqtt_password)) {
       Debugln("successful");
+      if (_mqtt_register_topics_function != NULL)
+        _mqtt_register_topics_function();
     }
     else {
       Debugln("unsuccessful. Retry will happen in three seconds");

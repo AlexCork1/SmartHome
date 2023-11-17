@@ -24,6 +24,7 @@ void IRAM_ATTR ISR_MovementSensor();
 
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
 void MQTT_message_publish(String topic, String message);
+void MQTT_Register_Topics();
 
 OnlineConnection connectToServer;
 
@@ -67,9 +68,7 @@ void setup()
   Debug_Init();
   Debugln("done");
 
-  connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback);
-  for(auto device : list_of_devices)
-    connectToServer.RegisterTopic(device->Get_MQTT_topic());
+  connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback, MQTT_Register_Topics);
 
   Debugln("setup end");
 }
@@ -88,12 +87,10 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
   String message;
   for (uint32_t i = 0; i < length; i++) message += (char)messageByte[i];
 
-  Serial.print(topicStr); Serial.print(" "); Serial.println(message);
-  
   Debug(topicStr); Debug(" "); Debugln(message);
 
   //find correct device for recevied message
-  for (Device* device : list_of_devices){
+  for (auto device : list_of_devices){
     if (device->Get_MQTT_topic() == String(topic)){
       device->MQTT_Message_Subscribe(message);
       break;
@@ -105,6 +102,11 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 void MQTT_message_publish(String topic, String message)
 {
   connectToServer.Publish(topic, message);
+}
+
+void MQTT_Register_Topics(){
+  for(auto device : list_of_devices)
+    connectToServer.RegisterTopic(device->Get_MQTT_topic());
 }
 
 

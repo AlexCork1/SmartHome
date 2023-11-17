@@ -8,7 +8,7 @@ class OnlineConnection
 {
   public:
     OnlineConnection();
-    void Init(const char* ssid, const char* password, const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, void (*mqttCallback)(char*, byte*, unsigned int));
+    void Init(const char* ssid, const char* password, const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, void (*mqttCallback)(char*, byte*, unsigned int), void (*mqtt_register_topics)());
     void Loop();
     void Publish(String topic, String message);
     void RegisterTopic(String topic);
@@ -21,7 +21,9 @@ class OnlineConnection
     const char* _mqtt_server;
     const char* _mqtt_username;
     const char* _mqtt_password;
+    
     void (*_mqtt_callback)(char*, byte*, unsigned int);
+    void (*_mqtt_register_topics_function)() = NULL;
 
     void WiFi_Connect();
     void WiFi_Reconnect();
