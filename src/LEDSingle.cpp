@@ -8,7 +8,7 @@
 *
 */
 /*###########################################################################################################################################*/
-LEDSingle::LEDSingle(String topic, void (*mqtt_publish)(String, String)) : LED(topic, mqtt_publish){
+LEDSingle::LEDSingle(String topic) : LED(topic){
   _led_state = 0;
   pinMode(SINGLE_LED_PIN, OUTPUT);
 }
@@ -41,10 +41,6 @@ void LEDSingle::MQTT_Message_Subscribe(String message){
     Toggle();
     return;
   }
-}
-void LEDSingle::MQTT_Message_Publish(){
-  //TODO
-  //MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/

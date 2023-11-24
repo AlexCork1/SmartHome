@@ -9,10 +9,8 @@
 /*###########################################################################################################################################*/
 MovementSensor::MovementSensor(
     String topic,
-    void (*ISR_MovementSensor)(),
-    void (*mqtt_publish)(String, String)) :
-
-    Device(topic, mqtt_publish)
+    void (*ISR_MovementSensor)()) :
+    Device(topic)
 {
     pinMode(PIR_SENSOR_PIN, INPUT);
 
@@ -48,11 +46,6 @@ String MovementSensor::Get_Current_State()
 void MovementSensor::MQTT_Message_Subscribe(String message)
 {
     // NOTHING - it is only send data
-}
-void MovementSensor::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/

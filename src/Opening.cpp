@@ -11,9 +11,8 @@
 Opening::Opening(
     String topic,
     uint8_t pin_number,
-    uint32_t channel_number,
-    void (*mqtt_publish)(String, String)) :
-    Device(topic, mqtt_publish),
+    uint32_t channel_number) :
+    Device(topic),
     _pin_number(pin_number),
     _channel_number(channel_number)
 {
@@ -42,11 +41,6 @@ void Opening::MQTT_Message_Subscribe(String message)
         Open();
     else if (message == "close")
         Close();
-}
-void Opening::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/

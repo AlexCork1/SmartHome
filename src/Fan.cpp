@@ -8,8 +8,8 @@
  *
  */
 /*###########################################################################################################################################*/
-Fan::Fan(String topic, void (*mqtt_publish)(String, String)) :
-    Device(topic, mqtt_publish)
+Fan::Fan(String topic) :
+    Device(topic)
 {
     pinMode(FAN_DIR1_PIN, OUTPUT);
     pinMode(FAN_DIR2_PIN, OUTPUT);
@@ -44,11 +44,6 @@ void Fan::MQTT_Message_Subscribe(String message)
         Start();
     else if (message == "stop")
         Stop();
-}
-void Fan::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/

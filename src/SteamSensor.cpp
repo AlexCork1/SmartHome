@@ -7,8 +7,8 @@
  *
  */
 /*###########################################################################################################################################*/
-SteamSensor::SteamSensor(String topic, void (*mqtt_publish)(String, String)) :
-    Device(topic, mqtt_publish)
+SteamSensor::SteamSensor(String topic) :
+    Device(topic)
 {
 
 }
@@ -34,11 +34,6 @@ String SteamSensor::Get_Current_State()
 void SteamSensor::MQTT_Message_Subscribe(String message)
 {
     // NOTHING - it is only send data
-}
-void SteamSensor::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/

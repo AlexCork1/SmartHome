@@ -7,8 +7,8 @@
  *
  */
 /*###########################################################################################################################################*/
-GasSensor::GasSensor(String topic, void (*ISR_GASSensor)(), void (*mqtt_publish)(String, String)) :
-    Device(topic, mqtt_publish)
+GasSensor::GasSensor(String topic, void (*ISR_GASSensor)()) :
+    Device(topic)
 {
     pinMode(GAS_SENSOR_PIN, INPUT);
 
@@ -44,11 +44,6 @@ String GasSensor::Get_Current_State()
 void GasSensor::MQTT_Message_Subscribe(String message)
 {
     // NOTHING - it is only send data
-}
-void GasSensor::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/

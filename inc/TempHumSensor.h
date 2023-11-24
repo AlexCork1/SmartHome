@@ -6,7 +6,7 @@
 class TempHumSensor : public Device
 {
   public:
-    TempHumSensor(String topic, void (*mqtt_publish)(String, String));
+    TempHumSensor(String topic);
     bool Read_All(float* temperature, float* humidity);
     bool Read_Temperature();
     bool Read_Humidity();
@@ -14,7 +14,6 @@ class TempHumSensor : public Device
     //functions dervied from Device class
     String Get_Current_State();
     void MQTT_Message_Subscribe(String message);
-    void MQTT_Message_Publish(); 
 
   private:
     float _temperature;

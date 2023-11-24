@@ -3,7 +3,7 @@
 class Button : public Device
 {
   public:
-    Button(String topic, uint8_t pin_number, void (*ISR_Button)(), void (*mqtt_publish)(String, String));
+    Button(String topic, uint8_t pin_number, void (*ISR_Button)());
 
     void Pressed();
     void Reset();
@@ -11,7 +11,6 @@ class Button : public Device
     //functions dervied from Device class
     String Get_Current_State();
     void MQTT_Message_Subscribe(String message);
-    void MQTT_Message_Publish();
 
   private:
     bool _button_state;

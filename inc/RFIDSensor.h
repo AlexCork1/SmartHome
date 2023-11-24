@@ -8,13 +8,13 @@
 class RFIDSensor : public Device
 {
   public:
-    RFIDSensor(String topic, void (*mqtt_publish)(String, String));
+    RFIDSensor(String topic);
     String Read();
 
     //functions dervied from Device class
     String Get_Current_State();
     void MQTT_Message_Subscribe(String message);
-    void MQTT_Message_Publish(); 
+    
   private:
     const uint16_t MY_I2C_ADDRESS_RFID = 0x28;
     MFRC522 _mfrc522;   // create MFRC522.

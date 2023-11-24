@@ -6,12 +6,11 @@
 class Fan : public Device
 {
   public:
-    Fan(String topic, void (*mqtt_publish)(String, String));
+    Fan(String topic);
 
     //functions dervied from Device class
     String Get_Current_State();
     void MQTT_Message_Subscribe(String message);
-    void MQTT_Message_Publish();
 
   private:
     bool _running_state;

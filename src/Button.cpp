@@ -8,13 +8,8 @@
  *
  */
 /*###########################################################################################################################################*/
-Button::Button(
-    String topic,
-    uint8_t pin_number,
-    void (*ISR_Button)(),
-    void (*mqtt_publish)(String, String)
-    ) :
-    Device(topic, mqtt_publish), _pin_number(pin_number)
+Button::Button(String topic, uint8_t pin_number, void (*ISR_Button)() ) :
+    Device(topic), _pin_number(pin_number)
 {
     pinMode(_pin_number, INPUT);
 
@@ -47,11 +42,6 @@ String Button::Get_Current_State()
 void Button::MQTT_Message_Subscribe(String message)
 {
     // NOTHING - it is only send data
-}
-void Button::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/

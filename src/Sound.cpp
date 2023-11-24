@@ -8,8 +8,8 @@
  *
  */
 /*###########################################################################################################################################*/
-Sound::Sound(String topic, void (*mqtt_publish)(String, String)) : 
-    Device(topic, mqtt_publish)
+Sound::Sound(String topic) : 
+    Device(topic)
 {
     melody_playing = String();
     melody_playing_state = -1;
@@ -46,11 +46,6 @@ void Sound::MQTT_Message_Subscribe(String message)
             break;
         }
     }
-}
-void Sound::MQTT_Message_Publish()
-{
-    // TODO
-    // MQTT_publish(MQTT_Get_topic().c_str(), GetData().c_str());
 }
 
 /*###########################################################################################################################################*/
