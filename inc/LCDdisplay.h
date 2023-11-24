@@ -1,22 +1,24 @@
 
 #include "Device.h"
-#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h> 
 
 class LCDdisplay : public Device
 {
   public:
-    LCDdisplay(String topic, void (*mqtt_publish)(String, String));
+    LCDdisplay(String topic);
     static const int MY_I2C_ADDRESS = 0x27;
     static const int NO_ROWS = 2;
     static const int NO_COLUMNS = 16;
 
+    void Init();
+
     //functions dervied from Device class
     String Get_Current_State();
     void MQTT_Message_Subscribe(String message);
-    void MQTT_Message_Publish();
 
   private:
-    const String EMPTY_STRING;
+    String EMPTY_LINE;
 
     LiquidCrystal_I2C _display;
     String _data_on_display[NO_ROWS];

@@ -55,8 +55,7 @@ void OnlineConnection::Loop(){
 
 /* Send message to MQTT server with specific topic */
 void OnlineConnection::Publish(String topic, String message){
-  String topicJoined = "/smarthome/" + topic;
-  _client.publish(topicJoined.c_str(), message.c_str());
+  _client.publish(topic.c_str(), message.c_str());
 }
 
 /* We need to register each topic we wish to listent to */

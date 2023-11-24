@@ -1,5 +1,5 @@
 #include "../inc/LCDdisplay.h"
-#include <Wire.h>
+#include "../inc/Debug.h"
 
 /*###########################################################################################################################################*/
 /*
@@ -8,16 +8,20 @@
 *
 */
 /*###########################################################################################################################################*/
-LCDdisplay::LCDdisplay(String topic, void (*mqtt_publish)(String, String)) :
-  Device(topic, mqtt_publish),
-  _display(MY_I2C_ADDRESS, LCDdisplay::NO_COLUMNS,LCDdisplay::NO_ROWS),
-  EMPTY_STRING(Get_Empty_Row())
+LCDdisplay::LCDdisplay(String topic) :
+  Device(topic),
+  _display(MY_I2C_ADDRESS, LCDdisplay::NO_COLUMNS, LCDdisplay::NO_ROWS)
 {
+  EMPTY_LINE = Get_Empty_Row();
   for(uint32_t i = 0; i < NO_ROWS; i++)
-    _data_on_display[i] = EMPTY_STRING;
-    
+    _data_on_display[i] = EMPTY_LINE;  
+}
+
+void LCDdisplay::Init()
+{
   _display.init();
   _display.backlight();
+  _display.clear();
 }
 
 /*###########################################################################################################################################*/
@@ -42,13 +46,15 @@ void LCDdisplay::MQTT_Message_Subscribe(String message){
 
   String temp = message;
   uint32_t row_to_write = 0;
-
+  Debugln(temp);
   while(true)
   {
     int32_t index_of_first = temp.indexOf('\n');
     if (index_of_first == -1) break;
 
     String subTemp = temp.substring(0, index_of_first > 16 ? 15 : index_of_first);
+    Debugln(subTemp);
+    
     if (subTemp.length() != 0){
         Write_Message(subTemp, row_to_write++, 0);
     }
@@ -57,11 +63,6 @@ void LCDdisplay::MQTT_Message_Subscribe(String message){
     if (row_to_write >= NO_ROWS)
       break;
   }
-}
-
-void LCDdisplay::MQTT_Message_Publish(){
-  //MQTT_publish(MQTT_topic().c_str(), GetData().c_str());
-  //TODO
 }
 
 /*###########################################################################################################################################*/
@@ -75,6 +76,8 @@ void LCDdisplay::Write_Message(String message, uint32_t row, uint32_t column){
   if (row >= NO_ROWS) return;
   if (column >= NO_COLUMNS) return;
 
+  Debug(row); Debug(" "); Debug(column); Debug(" "); Debugln(message);
+
   _display.setCursor(column, row);
   _display.print(message);
 
@@ -83,8 +86,7 @@ void LCDdisplay::Write_Message(String message, uint32_t row, uint32_t column){
     _data_on_display[row][j] = message[i];
 }
 void LCDdisplay::Clear_Display(){
-  for (int i = 0; i < NO_ROWS; i++) 
-    Clear_Row(i);
+  _display.clear();
 }
 void LCDdisplay::Clear_Row(uint32_t row){
   if (row >= NO_ROWS) return;
@@ -92,5 +94,5 @@ void LCDdisplay::Clear_Row(uint32_t row){
   _display.setCursor(0, row);
 
   //simple way of "clearing" row is to write empty char
-  _display.print(EMPTY_STRING);
+  _display.print(EMPTY_LINE);
 }
