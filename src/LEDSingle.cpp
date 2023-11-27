@@ -21,8 +21,9 @@ LEDSingle::LEDSingle(String topic) : LED(topic){
 */
 /*###########################################################################################################################################*/
 /* return single LED state as String */
-String LEDSingle::Get_Current_State(){
-  return String(_led_state);
+String LEDSingle::Get_Current_State()
+{
+  return "{ \"state\":" + String(_led_state) + " }";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
