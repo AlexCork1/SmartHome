@@ -1,5 +1,6 @@
 #include "../inc/LCDdisplay.h"
 #include "../inc/Debug.h"
+#include <ArduinoJson.h>
 
 /*###########################################################################################################################################*/
 /*
@@ -31,37 +32,37 @@ void LCDdisplay::Init()
 *
 */
 /*###########################################################################################################################################*/
-String LCDdisplay::Get_Current_State(){
-  String temp = String("");
-  for(uint32_t i = 0; i < LCDdisplay::NO_ROWS; i++){
-    temp += _data_on_display[i];
-    if (i != LCDdisplay::NO_ROWS-1)
-      temp += '\n';
-  }
-  return temp;
+String LCDdisplay::Get_Current_State()
+{
+  StaticJsonDocument<200> doc;
+  for(uint32_t i = 0; i < LCDdisplay::NO_ROWS; i++)
+    doc[String(i)] = _data_on_display[i];
+
+  String output;
+  serializeJson(doc, output);
+  return output;
 }
-void LCDdisplay::MQTT_Message_Subscribe(String message){
+
+/// @brief 
+/// @param message : JSON format
+/// {
+///   '0': "text to be put in row 0",
+///   '1': "text to be put in row 1"
+/// }
+void LCDdisplay::MQTT_Message_Subscribe(String message)
+{
 	//LCD display is composed of N rows and 16 columns
   Clear_Display();
 
-  String temp = message;
-  uint32_t row_to_write = 0;
-  Debugln(temp);
-  while(true)
-  {
-    int32_t index_of_first = temp.indexOf('\n');
-    if (index_of_first == -1) break;
+  DynamicJsonDocument doc(512);
+  deserializeJson(doc, message);
+  
+  for (int i = 0; i < NO_ROWS; i++){
+    String temp = doc[String(i)].as<String>();
+    if(temp != "null")
+      _data_on_display[i] = temp;
 
-    String subTemp = temp.substring(0, index_of_first > 16 ? 15 : index_of_first);
-    Debugln(subTemp);
-    
-    if (subTemp.length() != 0){
-        Write_Message(subTemp, row_to_write++, 0);
-    }
-    temp = temp.substring(index_of_first+1, temp.length());
-
-    if (row_to_write >= NO_ROWS)
-      break;
+    Write_Message(_data_on_display[i], i, 0);
   }
 }
 
@@ -80,10 +81,6 @@ void LCDdisplay::Write_Message(String message, uint32_t row, uint32_t column){
 
   _display.setCursor(column, row);
   _display.print(message);
-
-  //update the local copy for message
-  for (int32_t i = 0, j = column; i < message.length() && j < NO_COLUMNS; i++, j++)
-    _data_on_display[row][j] = message[i];
 }
 void LCDdisplay::Clear_Display(){
   _display.clear();
