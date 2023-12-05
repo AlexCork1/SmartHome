@@ -98,6 +98,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
   //check if topic is to get all devices (usually done on client application start)
   if (topicStr == MQTT_TOPIC_ALL)
   {
+    Debugln("All topic demand");
     for (auto device : list_of_devices) 
       connectToServer.Publish(device->Get_MQTT_topic() + MQTT_TOPIC_UPDATE_APPENDIX, device->Get_Current_State());
     return;
@@ -108,7 +109,6 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
   {
     if (device->Get_MQTT_topic() == String(topic))
     {
-
       //process incoming message for this device
       device->MQTT_Message_Subscribe(message);
       
@@ -123,6 +123,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 
 //MQTT publish function
 void MQTT_register_topics(){
+  connectToServer.RegisterTopic(MQTT_TOPIC_ALL);
   for(auto device : list_of_devices)
     connectToServer.RegisterTopic(device->Get_MQTT_topic());
 }
