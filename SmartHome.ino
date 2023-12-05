@@ -23,15 +23,16 @@ void IRAM_ATTR ISR_ButtonRight_Click();
 void IRAM_ATTR ISR_MovementSensor();
 
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
-void MQTT_Register_Topics();
+void MQTT_register_topics();
 
 OnlineConnection connectToServer;
 
 //variables
-LEDSingle ledSingle("ledSingle");
-LEDRGB ledRGB("ledRGB");
-LCDdisplay lcdDisplay("lcd");
-/*Sound sound("sound", MQTT_message_publish);
+LEDSingle ledSingle(MQTT_TOPIC_LED_SINGLE);
+LEDRGB ledRGB(MQTT_TOPIC_LED_RGB);
+LCDdisplay lcdDisplay(MQTT_TOPIC_LCD);
+Sound sound(MQTT_TOPIC_SOUND);
+/*
 Opening door("door", 13, 13, MQTT_message_publish);
 Opening window("window", 5, 10, MQTT_message_publish);
 Fan fan("fan", MQTT_message_publish);
@@ -47,8 +48,8 @@ Device* list_of_devices[] = {
   &ledSingle,
   &ledRGB,
   &lcdDisplay,
-  /*&sound,
-  &door,
+  &sound,
+  /*&door,
   &window,
   &fan,
   &gasSensor,
@@ -62,7 +63,7 @@ Device* list_of_devices[] = {
 
 void Inits()
 {
-  connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback, MQTT_Register_Topics);
+  connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback, MQTT_register_topics);
   lcdDisplay.Init();
 }
 
@@ -95,10 +96,10 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 
 
   //check if topic is to get all devices (usually done on client application start)
-  if (topicStr == MQTT_TOPIC_GET_ALL)
+  if (topicStr == MQTT_TOPIC_ALL)
   {
     for (auto device : list_of_devices) 
-      connectToServer.Publish(device->Get_MQTT_topic() + MQTT_TOPIC_UPDATE, device->Get_Current_State());
+      connectToServer.Publish(device->Get_MQTT_topic() + MQTT_TOPIC_UPDATE_APPENDIX, device->Get_Current_State());
     return;
   }
 
@@ -112,7 +113,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
       device->MQTT_Message_Subscribe(message);
       
       //broadcast new state to anyone listening
-      connectToServer.Publish(device->Get_MQTT_topic()  + MQTT_TOPIC_UPDATE, device->Get_Current_State());
+      connectToServer.Publish(device->Get_MQTT_topic()  + MQTT_TOPIC_UPDATE_APPENDIX, device->Get_Current_State());
 
       //we assume only one device has the same topic
       break;
@@ -121,7 +122,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 }
 
 //MQTT publish function
-void MQTT_Register_Topics(){
+void MQTT_register_topics(){
   for(auto device : list_of_devices)
     connectToServer.RegisterTopic(device->Get_MQTT_topic());
 }

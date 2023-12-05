@@ -2,8 +2,12 @@
 #define MQTTTOPICS_DATA_H
 #include <Arduino.h>
 
-const String MQTT_TOPIC_PREFIX = "/smarthome/";
-const String MQTT_TOPIC_GET_ALL = MQTT_TOPIC_PREFIX + "*";
-const String MQTT_TOPIC_UPDATE = "/update";
+const String MQTT_TOPIC_ALL        = "/smarthome/*";
+const String MQTT_TOPIC_LED_SINGLE = "/smarthome/ledSingle/";
+const String MQTT_TOPIC_LED_RGB    = "/smarthome/ledRGB/";
+const String MQTT_TOPIC_LCD        = "/smarthome/lcd/";
+const String MQTT_TOPIC_SOUND      = "/smarthome/sound/";
+
+const String MQTT_TOPIC_UPDATE_APPENDIX = "update";
 
 #endif
