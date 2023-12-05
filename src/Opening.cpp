@@ -31,7 +31,7 @@ Opening::Opening(
 /* return single LED state as String */
 String Opening::Get_Current_State()
 {
-    return String(_opening_state);
+    return "{ \"state\":" + String(_opening_state) + " }";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
@@ -41,6 +41,10 @@ void Opening::MQTT_Message_Subscribe(String message)
         Open();
     else if (message == "close")
         Close();
+    else
+    {
+        Debugln("Unrecognized message");
+    }
 }
 
 /*###########################################################################################################################################*/
