@@ -17,13 +17,15 @@ This file is not uploaded on github. You need to add it and fill it with followi
 #include "secrets.h"
 
 //function prototypes
+void Publish(String topic, String message);
+void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
+void MQTT_register_topics();
+
 void IRAM_ATTR ISR_GASSensor();
 void IRAM_ATTR ISR_ButtonLeft_Click();
 void IRAM_ATTR ISR_ButtonRight_Click();
 void IRAM_ATTR ISR_MovementSensor();
 
-void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
-void MQTT_register_topics();
 
 OnlineConnection connectToServer;
 
@@ -31,7 +33,7 @@ OnlineConnection connectToServer;
 LEDSingle ledSingle(MQTT_TOPIC_LED_SINGLE);
 LEDRGB ledRGB(MQTT_TOPIC_LED_RGB);
 LCDdisplay lcdDisplay(MQTT_TOPIC_LCD);
-Sound sound(MQTT_TOPIC_SOUND);
+Sound sound(MQTT_TOPIC_SOUND, Publish);
 /*
 Opening door("door", 13, 13, MQTT_message_publish);
 Opening window("window", 5, 10, MQTT_message_publish);
@@ -113,7 +115,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
       device->MQTT_Message_Subscribe(message);
       
       //broadcast new state to anyone listening
-      connectToServer.Publish(device->Get_MQTT_topic()  + MQTT_TOPIC_UPDATE_APPENDIX, device->Get_Current_State());
+      Publish(device->Get_MQTT_topic(), device->Get_Current_State());
 
       //we assume only one device has the same topic
       break;
@@ -128,7 +130,9 @@ void MQTT_register_topics(){
     connectToServer.RegisterTopic(device->Get_MQTT_topic());
 }
 
-
+void Publish(String topic, String message){
+    connectToServer.Publish(topic  + MQTT_TOPIC_UPDATE_APPENDIX, message);
+}
 /*###########################################################################################################################################*/
 /*
  *

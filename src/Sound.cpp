@@ -8,8 +8,9 @@
  *
  */
 /*###########################################################################################################################################*/
-Sound::Sound(String topic) : 
-    Device(topic)
+Sound::Sound(String topic, void (*mqtt_publish)(String, String)) : 
+    Device(topic),
+    _mqtt_publish(mqtt_publish)
 {
     melody_playing = String();
     melody_playing_state = -1;
@@ -25,7 +26,8 @@ Sound::Sound(String topic) :
 /* return single LED state as String */
 String Sound::Get_Current_State()
 {
-    return melody_playing;
+  return  "{ \"state\":" + String(melody_playing_state) + ","
+            "\"music\":" + melody_playing + "}";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
@@ -38,11 +40,15 @@ void Sound::MQTT_Message_Subscribe(String message)
         {
             melody_playing_state = i;
             melody_playing = melody_mappings[i].name;
+            //notify that we are playing music
+            _mqtt_publish(Get_MQTT_topic(), Get_Current_State());
 
             Play_Melody(melody_mappings[i]);
 
             melody_playing_state = -1;
             melody_playing = String();
+            //notify that we stoped playing music
+            _mqtt_publish(Get_MQTT_topic(), Get_Current_State());
             break;
         }
     }
