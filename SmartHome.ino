@@ -37,6 +37,7 @@ Sound sound(MQTT_TOPIC_SOUND, Publish);
 Fan fan(MQTT_TOPIC_FAN);
 Opening door(MQTT_TOPIC_DOOR, 13, 13);
 Opening window(MQTT_TOPIC_WINDOW, 5, 10);
+TempHumSensor tempHum(MQTT_TOPIC_TEMP);
 
 /*
 GasSensor gasSensor("gas", ISR_GASSensor, MQTT_message_publish);
@@ -45,7 +46,7 @@ Button buttonRight("button_right", 27, ISR_ButtonRight_Click, MQTT_message_publi
 SteamSensor steam("steam", MQTT_message_publish);
 MovementSensor movement("movement", ISR_MovementSensor, MQTT_message_publish);
 RFIDSensor rfid("rfid", MQTT_message_publish);
-TempHumSensor tempHum("temphum", MQTT_message_publish);*/
+*/
 
 Device* list_of_devices[] = {
   &ledSingle,
@@ -55,14 +56,14 @@ Device* list_of_devices[] = {
   &fan,
   &door,
   &window,
+  &tempHum
   /*
   &gasSensor,
   &buttonLeft,
   &buttonRight,
   &steam,
   &movement,
-  &rfid,
-  &tempHum*/
+  &rfid,*/
 };
 
 void Inits()

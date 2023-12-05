@@ -49,7 +49,15 @@ bool TempHumSensor::Read_Humidity(){
 
 String TempHumSensor::Get_Current_State()
 {
-    return String("temp:") + String(_temperature) + String(";") + String("hum:") + String(_humidity);
+    String response("{\"temp\" : \"");
+    response += String(_temperature);
+    response += "\",\"hum\" : \"";
+    response += String(_humidity);
+    response +=  "\" }";
+
+    Debug(response); Debug(" "); Debugln(response.length());
+
+    return response;
 }
 void TempHumSensor::MQTT_Message_Subscribe(String message)
 {
