@@ -1,16 +1,16 @@
 #ifndef MQTTTOPICS_DATA_H
 #define MQTTTOPICS_DATA_H
-#include <Arduino.h>
 
-const String MQTT_TOPIC_ALL        = "/smarthome/*";
-const String MQTT_TOPIC_LED_SINGLE = "/smarthome/ledSingle/";
-const String MQTT_TOPIC_LED_RGB    = "/smarthome/ledRGB/";
-const String MQTT_TOPIC_LCD        = "/smarthome/lcd/";
-const String MQTT_TOPIC_SOUND      = "/smarthome/sound/";
-const String MQTT_TOPIC_FAN        = "/smarthome/fan/";
-const String MQTT_TOPIC_DOOR       = "/smarthome/door/";
-const String MQTT_TOPIC_WINDOW     = "/smarthome/window/";
+constexpr const char* MQTT_TOPIC_ALL        = "/smarthome/*";
+constexpr const char* MQTT_TOPIC_LED_SINGLE = "/smarthome/ledSingle/";
+constexpr const char* MQTT_TOPIC_LED_RGB    = "/smarthome/ledRGB/";
+constexpr const char* MQTT_TOPIC_LCD        = "/smarthome/lcd/";
+constexpr const char* MQTT_TOPIC_SOUND      = "/smarthome/sound/";
+constexpr const char* MQTT_TOPIC_FAN        = "/smarthome/fan/";
+constexpr const char* MQTT_TOPIC_DOOR       = "/smarthome/door/";
+constexpr const char* MQTT_TOPIC_WINDOW     = "/smarthome/window/";
+constexpr const char* MQTT_TOPIC_TEMP       = "/smarthome/temp/";
 
-const String MQTT_TOPIC_UPDATE_APPENDIX = "update";
+constexpr const char* MQTT_TOPIC_UPDATE_APPENDIX = "update";
 
 #endif
