@@ -34,10 +34,10 @@ LEDSingle ledSingle(MQTT_TOPIC_LED_SINGLE);
 LEDRGB ledRGB(MQTT_TOPIC_LED_RGB);
 LCDdisplay lcdDisplay(MQTT_TOPIC_LCD);
 Sound sound(MQTT_TOPIC_SOUND, Publish);
+Fan fan(MQTT_TOPIC_FAN);
 /*
 Opening door("door", 13, 13, MQTT_message_publish);
 Opening window("window", 5, 10, MQTT_message_publish);
-Fan fan("fan", MQTT_message_publish);
 GasSensor gasSensor("gas", ISR_GASSensor, MQTT_message_publish);
 Button buttonLeft("button_left", 16, ISR_ButtonLeft_Click, MQTT_message_publish);
 Button buttonRight("button_right", 27, ISR_ButtonRight_Click, MQTT_message_publish);
@@ -51,9 +51,9 @@ Device* list_of_devices[] = {
   &ledRGB,
   &lcdDisplay,
   &sound,
+  &fan,
   /*&door,
   &window,
-  &fan,
   &gasSensor,
   &buttonLeft,
   &buttonRight,

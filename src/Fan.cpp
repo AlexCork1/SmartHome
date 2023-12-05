@@ -34,7 +34,7 @@ Fan::Fan(String topic) :
 /* return single LED state as String */
 String Fan::Get_Current_State()
 {
-    return String(_running_state);
+    return "{ \"state\":" + String(_running_state) + " }";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
@@ -44,6 +44,10 @@ void Fan::MQTT_Message_Subscribe(String message)
         Start();
     else if (message == "stop")
         Stop();
+    else
+    {
+        Debugln("Unrecognized message");
+    }
 }
 
 /*###########################################################################################################################################*/
