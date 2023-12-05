@@ -26,8 +26,8 @@ Sound::Sound(String topic, void (*mqtt_publish)(String, String)) :
 /* return single LED state as String */
 String Sound::Get_Current_State()
 {
-  return  "{ \"state\":" + String(melody_playing_state) + ","
-            "\"music\":" + melody_playing + "}";
+  return  "{ \"state\":\"" + String(melody_playing_state) + "\","
+            "\"music\":\"" + melody_playing + "\"}";
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
