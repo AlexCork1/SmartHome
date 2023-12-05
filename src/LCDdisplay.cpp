@@ -43,7 +43,6 @@ String LCDdisplay::Get_Current_State()
   return output;
 }
 
-/// @brief 
 /// @param message : JSON format
 /// {
 ///   '0': "text to be put in row 0",
