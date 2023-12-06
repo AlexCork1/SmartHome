@@ -15,7 +15,7 @@ GasSensor::GasSensor(String topic, void (*ISR_GASSensor)()) :
     Reset_Alarm();
 
     // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(GAS_SENSOR_PIN), ISR_GASSensor, FALLING);
+    attachInterrupt(digitalPinToInterrupt(GAS_SENSOR_PIN), ISR_GASSensor, CHANGE);
 }
 
 /*###########################################################################################################################################*/
@@ -37,13 +37,20 @@ void GasSensor::Set_Alarm(){
 /* return single LED state as String */
 String GasSensor::Get_Current_State()
 {
-    return String(gas_state);
+    String respond("{\"gas\": \"");
+    respond += String(gas_state);
+    respond += "\"}";
+    return std::move(respond);
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
 void GasSensor::MQTT_Message_Subscribe(String message)
 {
     // NOTHING - it is only send data
+}
+
+int32_t GasSensor::ReadState(){
+    return digitalRead(GAS_SENSOR_PIN);
 }
 
 /*###########################################################################################################################################*/

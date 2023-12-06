@@ -39,9 +39,10 @@ Opening door(MQTT_TOPIC_DOOR, 13, 13);
 Opening window(MQTT_TOPIC_WINDOW, 5, 10);
 TempHumSensor tempHum(MQTT_TOPIC_TEMP);
 RFIDSensor rfid(MQTT_TOPIC_RFID);
+GasSensor gasSensor(MQTT_TOPIC_GAS, ISR_GASSensor);
+volatile bool gasSensorDetectedChange;
 
 /*
-GasSensor gasSensor("gas", ISR_GASSensor, MQTT_message_publish);
 Button buttonLeft("button_left", 16, ISR_ButtonLeft_Click, MQTT_message_publish);
 Button buttonRight("button_right", 27, ISR_ButtonRight_Click, MQTT_message_publish);
 SteamSensor steam("steam", MQTT_message_publish);
@@ -58,8 +59,8 @@ Device* list_of_devices[] = {
   &window,
   &tempHum,
   &rfid,
-  /*
   &gasSensor,
+  /*
   &buttonLeft,
   &buttonRight,
   &steam,
@@ -70,6 +71,7 @@ void Inits()
 {
   connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback, MQTT_register_topics);
   lcdDisplay.Init();
+  gasSensorDetectedChange = false;
 }
 
 //inicializacija
@@ -87,8 +89,15 @@ void loop()
 {
   connectToServer.Loop();
 
+  //check if any RFID card was detected
   String rfidPassword = rfid.Read();
   if (rfidPassword.length() > 0) Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
+
+  //check if gas was detected
+  if (gasSensorDetectedChange == true){
+    Publish(gasSensor.Get_MQTT_topic(), gasSensor.Get_Current_State());
+    gasSensorDetectedChange = false;
+  }
   
   delay(50);
 }
@@ -124,8 +133,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
       //broadcast new state to anyone listening
       Publish(device->Get_MQTT_topic(), device->Get_Current_State());
 
-      //we assume only one device has the same topic
-      break;
+      break; //we assume only one device has the same topic
     }
   }
 }
@@ -149,7 +157,12 @@ void Publish(String topic, String message){
 /*###########################################################################################################################################*/
 
 void IRAM_ATTR ISR_GASSensor() {
-  //gasSensor.Set_Alarm();
+  if (gasSensor.ReadState() == HIGH)
+    gasSensor.Set_Alarm();
+  else
+    gasSensor.Reset_Alarm();
+
+  gasSensorDetectedChange = true;
 }
 void IRAM_ATTR ISR_ButtonLeft_Click() {
   //buttonLeft.Pressed();

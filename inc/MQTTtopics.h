@@ -11,6 +11,7 @@ constexpr const char* MQTT_TOPIC_DOOR       = "/smarthome/door/";
 constexpr const char* MQTT_TOPIC_WINDOW     = "/smarthome/window/";
 constexpr const char* MQTT_TOPIC_TEMP       = "/smarthome/temp/";
 constexpr const char* MQTT_TOPIC_RFID       = "/smarthome/rfid/";
+constexpr const char* MQTT_TOPIC_GAS       = "/smarthome/gas/";
 
 constexpr const char* MQTT_TOPIC_UPDATE_APPENDIX = "update";
 
