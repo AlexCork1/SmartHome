@@ -7,17 +7,21 @@ class TempHumSensor : public Device
 {
   public:
     TempHumSensor(String topic);
-    bool Read_All(float* temperature, float* humidity);
+    
+    bool Read_All();
     bool Read_Temperature();
     bool Read_Humidity();
+
+    float Get_Temperature() const { return _temperature; }
+    float Get_Humidity() const { return _humidity; }
 
     //functions dervied from Device class
     String Get_Current_State();
     void MQTT_Message_Subscribe(String message);
 
   private:
-    float _temperature;
-    float _humidity;
+    float _temperature = 0.0f;
+    float _humidity = 0.0f;
     DHT _dht;
 
     const uint8_t TEMP_SENZOR_PIN = 17;

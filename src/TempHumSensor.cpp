@@ -10,7 +10,7 @@
 /*###########################################################################################################################################*/
 TempHumSensor::TempHumSensor(String topic) : 
     Device(topic),
-    _dht(TEMP_SENZOR_PIN, DHTTYPE), _temperature(0), _humidity(0)
+    _dht(TEMP_SENZOR_PIN, DHTTYPE)
 {
     _dht.begin();
 }
@@ -23,25 +23,26 @@ TempHumSensor::TempHumSensor(String topic) :
  */
 /*###########################################################################################################################################*/
 
-bool TempHumSensor::Read_All(float* temperature, float* humidity)
+bool TempHumSensor::Read_All()
 {
     bool success_temp = Read_Temperature();
     bool success_hum = Read_Humidity();
 
-    *temperature = _temperature;
-    *humidity = _humidity;
-    return success_temp && success_hum;
+    return success_temp || success_hum;
 }
-bool TempHumSensor::Read_Temperature(){
+bool TempHumSensor::Read_Temperature()
+{
     float temp = _dht.readTemperature();
-    if(isnan(temp)) return false;
-
+    if (isnan(temp)) return false;
+    if (temp == _temperature) return false;
+    
     _temperature = temp;
     return true;
 }
 bool TempHumSensor::Read_Humidity(){
     float hum = _dht.readHumidity();
-    if(isnan(hum)) return false;
+    if (isnan(hum)) return false;
+    if (hum == _humidity) return false;
 
     _humidity = hum;
     return true;
