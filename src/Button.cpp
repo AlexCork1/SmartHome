@@ -8,13 +8,13 @@
  *
  */
 /*###########################################################################################################################################*/
-Button::Button(String topic, uint8_t pin_number, void (*ISR_Button)() ) :
-    Device(topic), _pin_number(pin_number)
+Button::Button(const char* topic, uint8_t pin_number, void (*ISR_Button)() ) :
+    Device(topic), _pinNumber(pin_number)
 {
-    pinMode(_pin_number, INPUT);
+    pinMode(_pinNumber, INPUT);
 
     // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(_pin_number), ISR_Button, FALLING);
+    attachInterrupt(digitalPinToInterrupt(_pinNumber), ISR_Button, CHANGE);
 }
 
 /*###########################################################################################################################################*/
@@ -26,30 +26,17 @@ Button::Button(String topic, uint8_t pin_number, void (*ISR_Button)() ) :
 /*###########################################################################################################################################*/
 void Button::Pressed()
 {
-    _button_state = true;
+    _buttonState = true;
 }
 void Button::Reset(){
-    _button_state = false;
+    _buttonState = false;
 }
 
 /* return single LED state as String */
-/* return single LED state as String */
-String Button::Get_Current_State()
-{
-    String respond("{\"button\": \"");
-    respond += String(_button_state);
-    respond += "\"}";
-    return std::move(respond);
+String Button::Get_Current_State(){
+    return String("{\"button\": \"") + String(_buttonState) + "\"}";
 }
 
-/* callback function that will be called when message with MQTT_Get_topic() is received */
-void Button::MQTT_Message_Subscribe(String message)
-{
-    // NOTHING - it is only send data
-}
-int32_t Button::ReadState(){
-    return digitalRead(_pin_number);
-}
 
 /*###########################################################################################################################################*/
 /*
