@@ -6,15 +6,15 @@
 class Device
 {
   public:
-    Device(String topic) : _mqttTopic(topic) {}
+    Device(const char topic[]) : _mqttTopic(topic) {}
     
-    String Get_MQTT_topic() { return _mqttTopic; }
+    const char* Get_MQTT_topic() const { return _mqttTopic; }
 
     virtual String Get_Current_State() = 0; //used to send current state of all devices to MQTT server
-    virtual void MQTT_Message_Subscribe(String message) = 0;  //function that will be triggered when message for current topic is recevied
+    virtual void MQTT_Message_Subscribe(const String& message) = 0;  //function that will be triggered when message for current topic is recevied
 
   private:
-    String _mqttTopic;
+    const char* _mqttTopic;
 };
 
 #endif
