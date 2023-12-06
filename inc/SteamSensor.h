@@ -6,7 +6,7 @@ class SteamSensor : public Device
   public:
     SteamSensor(String topic);
 
-    int32_t Get_Data();
+    bool Get_Data();
     
     //functions dervied from Device class
     String Get_Current_State();

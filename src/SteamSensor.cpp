@@ -20,14 +20,22 @@ SteamSensor::SteamSensor(String topic) :
  *
  */
 /*###########################################################################################################################################*/
-int32_t SteamSensor::Get_Data(){
-    _data = analogRead(STEAM_SENSOR_PIN);
-    return _data;
+bool SteamSensor::Get_Data(){
+    int32_t temp = analogRead(STEAM_SENSOR_PIN);
+    if (temp != _data){
+        _data = temp;
+        return true;
+    }
+    
+    return false;
 }
 /* return single LED state as String */
 String SteamSensor::Get_Current_State()
 {
-    return String(_data);
+    String respond("{\"steam\": \"");
+    respond += String(_data);
+    respond += "\"}";
+    return std::move(respond);
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
