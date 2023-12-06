@@ -15,6 +15,7 @@ constexpr const char* MQTT_TOPIC_GAS          = "/smarthome/gas/";
 constexpr const char* MQTT_TOPIC_BUTTON_LEFT  = "/smarthome/buttonLeft/";
 constexpr const char* MQTT_TOPIC_BUTTON_RIGHT = "/smarthome/buttonRight/";
 constexpr const char* MQTT_TOPIC_STEAM        = "/smarthome/steam/";
+constexpr const char* MQTT_TOPIC_MOVEMENT     = "/smarthome/movement/";
 
 constexpr const char* MQTT_TOPIC_UPDATE_APPENDIX = "update";
 
