@@ -14,4 +14,8 @@ public:
 private:
     const uint8_t _pinNumber;
     bool _buttonState;
+    
+    static constexpr uint8_t JSON_BUFFER_SIZE = 20;
+    static constexpr const char* JSON_FORMAT = "{\"state\":%c}";
+    char jsonBuffer[JSON_BUFFER_SIZE];
 };

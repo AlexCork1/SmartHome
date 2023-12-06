@@ -8,9 +8,7 @@
  *
  */
 /*###########################################################################################################################################*/
-Fan::Fan(String topic) :
-    Device(topic)
-{
+Fan::Fan(const char* topic) : Device(topic){
     pinMode(FAN_DIR1_PIN, OUTPUT);
     pinMode(FAN_DIR2_PIN, OUTPUT);
 
@@ -31,23 +29,19 @@ Fan::Fan(String topic) :
  *
  */
 /*###########################################################################################################################################*/
-/* return single LED state as String */
 String Fan::Get_Current_State()
 {
-    return "{ \"state\":" + String(_running_state) + " }";
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _runningState ? '1' : '0');
+    return String(jsonBuffer);
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
-void Fan::MQTT_Message_Subscribe(String message)
+void Fan::MQTT_Message_Subscribe(const String& message)
 {
     if (message == "start")
         Start();
     else if (message == "stop")
         Stop();
-    else
-    {
-        Debugln("Unrecognized message");
-    }
 }
 
 /*###########################################################################################################################################*/
@@ -57,16 +51,15 @@ void Fan::MQTT_Message_Subscribe(String message)
  *
  */
 /*###########################################################################################################################################*/
-/* Start fan*/
 void Fan::Start()
-{
-    _running_state = true;
+{   /* Start fan*/
+    _runningState = true;
     ledcWrite(CHANNEL_NUMBER, FAN_ON);
 }
 
-/* stop fan  */
+
 void Fan::Stop()
-{
-    _running_state = false;
+{   /* Stop fan  */
+    _runningState = false;
     ledcWrite(CHANNEL_NUMBER, 0);
 }

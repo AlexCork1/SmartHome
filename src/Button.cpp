@@ -32,10 +32,8 @@ void Button::Reset(){
     _buttonState = false;
 }
 
-#define JSON_BUFFER_SIZE 20
 String Button::Get_Current_State(){
-    char jsonBuffer[JSON_BUFFER_SIZE];
-    snprintf(jsonBuffer, JSON_BUFFER_SIZE, "{\"button\":%c}", _buttonState ? '1' : '0');
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _buttonState ? '1' : '0');
     return String(jsonBuffer);
 }
 

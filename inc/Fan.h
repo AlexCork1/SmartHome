@@ -1,28 +1,25 @@
-#ifndef FAN_DATA_H
-#define FAN_DATA_H
-
 #include "Device.h"
 
-class Fan : public Device
-{
-  public:
-    Fan(String topic);
+class Fan : public Device{
+public:
+    Fan(const char* topic);
 
-    //functions dervied from Device class
-    String Get_Current_State();
-    void MQTT_Message_Subscribe(String message);
+    String Get_Current_State() override;
+    void MQTT_Message_Subscribe(const String& message) override;
 
-  private:
-    bool _running_state;
+private:
+    bool _runningState;
     
-    const uint8_t FAN_DIR1_PIN = 18;
-    const uint8_t FAN_DIR2_PIN = 19;
+    static constexpr uint8_t FAN_DIR1_PIN = 18;
+    static constexpr uint8_t FAN_DIR2_PIN = 19;
+    static constexpr uint8_t CHANNEL_NUMBER = 5;
+    static constexpr uint8_t FAN_OFF = 0;
+    static constexpr uint8_t FAN_ON = 127; //max speed 255
 
-    const uint8_t CHANNEL_NUMBER = 5;
-    const uint8_t FAN_OFF = 0;
-    const uint8_t FAN_ON = 127; //max speed 255
+    static constexpr uint8_t JSON_BUFFER_SIZE = 20;
+    static constexpr const char* JSON_FORMAT = "{\"state\":%c}";
+    char jsonBuffer[JSON_BUFFER_SIZE];
 
     void Start();
     void Stop();
 };
-#endif
