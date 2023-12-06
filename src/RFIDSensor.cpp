@@ -33,7 +33,7 @@ String RFIDSensor::Read()
     // Select one of the cards.
     if (!_mfrc522.PICC_ReadCardSerial()) return "";
 
-    String password = "";
+    String password("{ \"rfid\" : \"");
     // save UID
     Debug(F("Card UID:"));
     for (byte i = 0; i < _mfrc522.uid.size; i++)
@@ -41,10 +41,11 @@ String RFIDSensor::Read()
         Debug(_mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
         Debug(_mfrc522.uid.uidByte[i]);
 
-        password = password + String(_mfrc522.uid.uidByte[i]);
+        password += String(_mfrc522.uid.uidByte[i]);
     }
     Debugln(password);
-    return password;
+    password += "\"}";
+    return std::move(password);
 }
 String RFIDSensor::Get_Current_State()
 {

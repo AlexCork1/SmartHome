@@ -38,6 +38,7 @@ Fan fan(MQTT_TOPIC_FAN);
 Opening door(MQTT_TOPIC_DOOR, 13, 13);
 Opening window(MQTT_TOPIC_WINDOW, 5, 10);
 TempHumSensor tempHum(MQTT_TOPIC_TEMP);
+RFIDSensor rfid(MQTT_TOPIC_RFID);
 
 /*
 GasSensor gasSensor("gas", ISR_GASSensor, MQTT_message_publish);
@@ -45,7 +46,6 @@ Button buttonLeft("button_left", 16, ISR_ButtonLeft_Click, MQTT_message_publish)
 Button buttonRight("button_right", 27, ISR_ButtonRight_Click, MQTT_message_publish);
 SteamSensor steam("steam", MQTT_message_publish);
 MovementSensor movement("movement", ISR_MovementSensor, MQTT_message_publish);
-RFIDSensor rfid("rfid", MQTT_message_publish);
 */
 
 Device* list_of_devices[] = {
@@ -56,14 +56,14 @@ Device* list_of_devices[] = {
   &fan,
   &door,
   &window,
-  &tempHum
+  &tempHum,
+  &rfid,
   /*
   &gasSensor,
   &buttonLeft,
   &buttonRight,
   &steam,
-  &movement,
-  &rfid,*/
+  &movement,*/
 };
 
 void Inits()
@@ -86,6 +86,11 @@ void setup()
 void loop()
 {
   connectToServer.Loop();
+
+  String rfidPassword = rfid.Read();
+  if (rfidPassword.length() > 0)
+    Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
+  
   delay(50);
 }
 
