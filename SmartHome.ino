@@ -201,11 +201,16 @@ void inline Process_Movement(){
 }
 void inline Process_TimerINT(){
   
-  //check if steam sensor has a new value
-  if (steam.Get_Data()) Publish(steam.Get_MQTT_topic(), steam.Get_Current_State());
+  if(timerISR == true)
+  {
+    //check if steam sensor has a new value
+    if (steam.Get_Data()) Publish(steam.Get_MQTT_topic(), steam.Get_Current_State());
 
-  //check if temperaute sensor has a new value
-  if (tempHum.Read_All()) Publish(tempHum.Get_MQTT_topic(), tempHum.Get_Current_State());
+    //check if temperaute sensor has a new value
+    if (tempHum.Read_All()) Publish(tempHum.Get_MQTT_topic(), tempHum.Get_Current_State());
+
+    timerISR = false;
+  }
 }
 
 //SETUP function
@@ -247,7 +252,7 @@ void IRAM_ATTR ISR_GASSensor() {
   gasSensorDetectedChange = true;
 }
 void IRAM_ATTR ISR_ButtonLeft_Click() {
-  if (buttonLeft.ReadState() == HIGH)
+  if (buttonLeft.Read_State() == HIGH)
     buttonLeft.Pressed();
   else
     buttonLeft.Reset();
@@ -255,7 +260,7 @@ void IRAM_ATTR ISR_ButtonLeft_Click() {
   buttonLeftDetectedChange = true;
 }
 void IRAM_ATTR ISR_ButtonRight_Click() {
-  if (buttonRight.ReadState() == HIGH)
+  if (buttonRight.Read_State() == HIGH)
     buttonRight.Pressed();
   else
     buttonRight.Reset();
