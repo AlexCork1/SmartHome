@@ -29,9 +29,11 @@ RFIDSensor::RFIDSensor(
 String RFIDSensor::Read()
 {
     // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-    if (!_mfrc522.PICC_IsNewCardPresent()) return "";
     // Select one of the cards.
-    if (!_mfrc522.PICC_ReadCardSerial()) return "";
+    if (_mfrc522.PICC_IsNewCardPresent() == false || _mfrc522.PICC_ReadCardSerial() == false){
+        _oldPassword = "";
+        return "";
+    }    
 
     String password("{ \"rfid\" : \"");
     // save UID
@@ -45,6 +47,12 @@ String RFIDSensor::Read()
     }
     Debugln(password);
     password += "\"}";
+
+    if (_oldPassword == password){
+        return "";
+    }
+    
+    _oldPassword = password;
     return std::move(password);
 }
 String RFIDSensor::Get_Current_State()

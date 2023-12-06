@@ -88,8 +88,7 @@ void loop()
   connectToServer.Loop();
 
   String rfidPassword = rfid.Read();
-  if (rfidPassword.length() > 0)
-    Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
+  if (rfidPassword.length() > 0) Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
   
   delay(50);
 }

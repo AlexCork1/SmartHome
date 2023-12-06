@@ -18,4 +18,5 @@ class RFIDSensor : public Device
   private:
     const uint16_t MY_I2C_ADDRESS_RFID = 0x28;
     MFRC522 _mfrc522;   // create MFRC522.
+    String _oldPassword;
 };
