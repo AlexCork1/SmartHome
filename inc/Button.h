@@ -11,6 +11,7 @@ class Button : public Device
     //functions dervied from Device class
     String Get_Current_State();
     void MQTT_Message_Subscribe(String message);
+    int32_t ReadState();
 
   private:
     bool _button_state;

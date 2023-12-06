@@ -33,15 +33,22 @@ void Button::Reset(){
 }
 
 /* return single LED state as String */
+/* return single LED state as String */
 String Button::Get_Current_State()
 {
-    return String(_button_state);
+    String respond("{\"button\": \"");
+    respond += String(_button_state);
+    respond += "\"}";
+    return std::move(respond);
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
 void Button::MQTT_Message_Subscribe(String message)
 {
     // NOTHING - it is only send data
+}
+int32_t Button::ReadState(){
+    return digitalRead(_pin_number);
 }
 
 /*###########################################################################################################################################*/

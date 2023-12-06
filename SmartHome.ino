@@ -40,11 +40,14 @@ Opening window(MQTT_TOPIC_WINDOW, 5, 10);
 TempHumSensor tempHum(MQTT_TOPIC_TEMP);
 RFIDSensor rfid(MQTT_TOPIC_RFID);
 GasSensor gasSensor(MQTT_TOPIC_GAS, ISR_GASSensor);
+Button buttonLeft(MQTT_TOPIC_BUTTON_LEFT, 16, ISR_ButtonLeft_Click);
+Button buttonRight(MQTT_TOPIC_BUTTON_RIGHT, 27, ISR_ButtonRight_Click);
+
 volatile bool gasSensorDetectedChange;
+volatile bool buttonLeftDetectedChange;
+volatile bool buttonRightDetectedChange;
 
 /*
-Button buttonLeft("button_left", 16, ISR_ButtonLeft_Click, MQTT_message_publish);
-Button buttonRight("button_right", 27, ISR_ButtonRight_Click, MQTT_message_publish);
 SteamSensor steam("steam", MQTT_message_publish);
 MovementSensor movement("movement", ISR_MovementSensor, MQTT_message_publish);
 */
@@ -60,9 +63,9 @@ Device* list_of_devices[] = {
   &tempHum,
   &rfid,
   &gasSensor,
-  /*
   &buttonLeft,
   &buttonRight,
+  /*
   &steam,
   &movement,*/
 };
@@ -72,13 +75,14 @@ void Inits()
   connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback, MQTT_register_topics);
   lcdDisplay.Init();
   gasSensorDetectedChange = false;
+  buttonLeftDetectedChange = false;
+  buttonRightDetectedChange = false;
 }
 
 //inicializacija
 void setup()
 { 
-  Debug_Init();
-  Debugln("done");
+  Debug_Init(); Debugln("debug init done");
 
   Inits();
 
@@ -99,6 +103,19 @@ void loop()
     gasSensorDetectedChange = false;
   }
   
+  //check if left button was pressed
+  if (buttonLeftDetectedChange == true){
+    Publish(buttonLeft.Get_MQTT_topic(), buttonLeft.Get_Current_State());
+    buttonLeftDetectedChange = false;
+  }
+
+  //check if right button was pressed
+  if (buttonRightDetectedChange == true){
+    Publish(buttonRight.Get_MQTT_topic(), buttonRight.Get_Current_State());
+    buttonRightDetectedChange = false;
+  }
+
+
   delay(50);
 }
 
@@ -165,10 +182,20 @@ void IRAM_ATTR ISR_GASSensor() {
   gasSensorDetectedChange = true;
 }
 void IRAM_ATTR ISR_ButtonLeft_Click() {
-  //buttonLeft.Pressed();
+  if (buttonLeft.ReadState() == HIGH)
+    buttonLeft.Pressed();
+  else
+    buttonLeft.Reset();
+  
+  buttonLeftDetectedChange = true;
 }
 void IRAM_ATTR ISR_ButtonRight_Click() {
-  //buttonRight.Pressed();
+  if (buttonRight.ReadState() == HIGH)
+    buttonRight.Pressed();
+  else
+    buttonRight.Reset();
+  
+  buttonRightDetectedChange = true;
 }
 void IRAM_ATTR ISR_MovementSensor() {
   //movement.Detected();
