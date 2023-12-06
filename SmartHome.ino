@@ -16,20 +16,25 @@ This file is not uploaded on github. You need to add it and fill it with followi
 */
 #include "secrets.h"
 
-//function prototypes
+/*###############################################################################################################*/
+/*
+ *     function prototypes
+ */
+/*###############################################################################################################*/
 void Publish(String topic, String message);
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
 void MQTT_register_topics();
-
 void IRAM_ATTR ISR_GASSensor();
 void IRAM_ATTR ISR_ButtonLeft_Click();
 void IRAM_ATTR ISR_ButtonRight_Click();
 void IRAM_ATTR ISR_MovementSensor();
 
 
-OnlineConnection connectToServer;
-
-//variables
+/*###############################################################################################################*/
+/*
+ *     remote controled devices
+ */
+/*###############################################################################################################*/
 LEDSingle ledSingle(MQTT_TOPIC_LED_SINGLE);
 LEDRGB ledRGB(MQTT_TOPIC_LED_RGB);
 LCDdisplay lcdDisplay(MQTT_TOPIC_LCD);
@@ -37,20 +42,37 @@ Sound sound(MQTT_TOPIC_SOUND, Publish);
 Fan fan(MQTT_TOPIC_FAN);
 Opening door(MQTT_TOPIC_DOOR, 13, 13);
 Opening window(MQTT_TOPIC_WINDOW, 5, 10);
-TempHumSensor tempHum(MQTT_TOPIC_TEMP);
-RFIDSensor rfid(MQTT_TOPIC_RFID);
+
+/*###############################################################################################################*/
+/*
+ *     ISR based devices
+ */
+/*###############################################################################################################*/
 GasSensor gasSensor(MQTT_TOPIC_GAS, ISR_GASSensor);
 Button buttonLeft(MQTT_TOPIC_BUTTON_LEFT, 16, ISR_ButtonLeft_Click);
 Button buttonRight(MQTT_TOPIC_BUTTON_RIGHT, 27, ISR_ButtonRight_Click);
-
+MovementSensor movement(MQTT_TOPIC_MOVEMENT, ISR_MovementSensor);
 volatile bool gasSensorDetectedChange;
 volatile bool buttonLeftDetectedChange;
 volatile bool buttonRightDetectedChange;
+volatile bool movementDetectedChange;
 
+/*###############################################################################################################*/
 /*
-SteamSensor steam("steam", MQTT_message_publish);
-MovementSensor movement("movement", ISR_MovementSensor, MQTT_message_publish);
-*/
+ *     periodic devices
+ */
+/*###############################################################################################################*/
+RFIDSensor rfid(MQTT_TOPIC_RFID);
+SteamSensor steam(MQTT_TOPIC_STEAM);
+TempHumSensor tempHum(MQTT_TOPIC_TEMP);
+
+
+/*###############################################################################################################*/
+/*
+ *     private variables
+ */
+/*###############################################################################################################*/
+OnlineConnection connectToServer;
 
 Device* list_of_devices[] = {
   &ledSingle,
@@ -65,10 +87,16 @@ Device* list_of_devices[] = {
   &gasSensor,
   &buttonLeft,
   &buttonRight,
-  /*
   &steam,
-  &movement,*/
+  &movement
 };
+
+
+/*###############################################################################################################*/
+/*
+ *     methods
+ */
+/*###############################################################################################################*/
 
 void Inits()
 {
@@ -78,47 +106,6 @@ void Inits()
   buttonLeftDetectedChange = false;
   buttonRightDetectedChange = false;
 }
-
-//inicializacija
-void setup()
-{ 
-  Debug_Init(); Debugln("debug init done");
-
-  Inits();
-
-  Debugln("setup end");
-}
-
-void loop()
-{
-  connectToServer.Loop();
-
-  //check if any RFID card was detected
-  String rfidPassword = rfid.Read();
-  if (rfidPassword.length() > 0) Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
-
-  //check if gas was detected
-  if (gasSensorDetectedChange == true){
-    Publish(gasSensor.Get_MQTT_topic(), gasSensor.Get_Current_State());
-    gasSensorDetectedChange = false;
-  }
-  
-  //check if left button was pressed
-  if (buttonLeftDetectedChange == true){
-    Publish(buttonLeft.Get_MQTT_topic(), buttonLeft.Get_Current_State());
-    buttonLeftDetectedChange = false;
-  }
-
-  //check if right button was pressed
-  if (buttonRightDetectedChange == true){
-    Publish(buttonRight.Get_MQTT_topic(), buttonRight.Get_Current_State());
-    buttonRightDetectedChange = false;
-  }
-
-
-  delay(50);
-}
-
 
 //MQTT callback function
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
@@ -165,14 +152,58 @@ void MQTT_register_topics(){
 void Publish(String topic, String message){
     connectToServer.Publish(topic  + MQTT_TOPIC_UPDATE_APPENDIX, message);
 }
+
+//SETUP function
+void setup()
+{ 
+  Debug_Init(); Debugln("debug init done");
+
+  Inits();
+
+  Debugln("setup end");
+}
+
+//MAIN LOOP function
+void loop()
+{
+  connectToServer.Loop();
+
+  //check if any RFID card was detected
+  String rfidPassword = rfid.Read();
+  if (rfidPassword.length() > 0) Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
+
+  //check if gas was detected
+  if (gasSensorDetectedChange == true){
+    Publish(gasSensor.Get_MQTT_topic(), gasSensor.Get_Current_State());
+    gasSensorDetectedChange = false;
+  }
+  
+  //check if left button was pressed
+  if (buttonLeftDetectedChange == true){
+    Publish(buttonLeft.Get_MQTT_topic(), buttonLeft.Get_Current_State());
+    buttonLeftDetectedChange = false;
+  }
+
+  //check if right button was pressed
+  if (buttonRightDetectedChange == true){
+    Publish(buttonRight.Get_MQTT_topic(), buttonRight.Get_Current_State());
+    buttonRightDetectedChange = false;
+  }
+
+  //check if movement was detected
+  if (movementDetectedChange == true){
+    Publish(movement.Get_MQTT_topic(), movement.Get_Current_State());
+    movementDetectedChange = false;
+  }
+
+  delay(50);
+}
+
 /*###########################################################################################################################################*/
 /*
- *
  *     ISR routines
- *
  */
 /*###########################################################################################################################################*/
-
 void IRAM_ATTR ISR_GASSensor() {
   if (gasSensor.ReadState() == HIGH)
     gasSensor.Set_Alarm();
@@ -198,5 +229,10 @@ void IRAM_ATTR ISR_ButtonRight_Click() {
   buttonRightDetectedChange = true;
 }
 void IRAM_ATTR ISR_MovementSensor() {
-  //movement.Detected();
+  if (movement.ReadState() == HIGH)
+    movement.Detected();
+  else
+    movement.Reset();
+  
+  movementDetectedChange = true;
 }
