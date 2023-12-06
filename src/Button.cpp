@@ -32,9 +32,11 @@ void Button::Reset(){
     _buttonState = false;
 }
 
-/* return single LED state as String */
+#define JSON_BUFFER_SIZE 20
 String Button::Get_Current_State(){
-    return String("{\"button\": \"") + String(_buttonState) + "\"}";
+    char jsonBuffer[JSON_BUFFER_SIZE];
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, "{\"button\":%c}", _buttonState ? '1' : '0');
+    return String(jsonBuffer);
 }
 
 
