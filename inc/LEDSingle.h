@@ -14,6 +14,10 @@ class LEDSingle : public LED {
     static constexpr uint8_t JSON_BUFFER_SIZE = 20;
     static constexpr const char* JSON_FORMAT = "{\"state\":%c}";
     char jsonBuffer[JSON_BUFFER_SIZE];
+    
+    static constexpr char ON_COMMAND[] = "On";
+    static constexpr char OFF_COMMAND[] = "Off";
+    static constexpr char TOGGLE_COMMAND[] = "Toggle";
 
     void On() override;
     void Off() override;

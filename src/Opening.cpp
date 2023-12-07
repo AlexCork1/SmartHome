@@ -40,11 +40,8 @@ String Opening::Get_Current_State()
 /* callback function that will be called when message with MQTT_Get_topic() is received */
 void Opening::MQTT_Message_Subscribe(const String& message)
 {
-    OpeningCommand command = OpeningCommand::Unknown;
-    if (strcmp(message.c_str(), OPEN_COMMAND) == 0) command = OpeningCommand::Open;
-    else if (strcmp(message.c_str(), CLOSE_COMMAND) == 0) command = OpeningCommand::Close;
-    
-    Process_Command(command);
+    if (strcmp(message.c_str(), OPEN_COMMAND) == 0) Open();
+    else if (strcmp(message.c_str(), CLOSE_COMMAND) == 0) Close();
 }
 
 /*###########################################################################################################################################*/
@@ -66,21 +63,4 @@ void Opening::Close()
 {
     _openingState = OpeningState::Closed;
     ledcWrite(_channelNumber, CLOSED_STATE);
-}
-
-void Opening::Process_Command(OpeningCommand command){
-    switch (command)
-    {
-    case OpeningCommand::Open:
-        Open();
-        break;
-    
-    case OpeningCommand::Close:
-        Close();
-        break;
-
-    default:
-        Debugln("Opening :: Unknown command");
-        break;
-    }
 }

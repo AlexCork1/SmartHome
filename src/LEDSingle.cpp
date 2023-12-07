@@ -1,6 +1,11 @@
 #include "../inc/Debug.h"
 #include "../inc/LEDSingle.h"
 
+constexpr const char LEDSingle::ON_COMMAND[];
+constexpr const char LEDSingle::OFF_COMMAND[];
+constexpr const char LEDSingle::TOGGLE_COMMAND[];
+
+
 /*###########################################################################################################################################*/
 /*
 *
@@ -30,12 +35,9 @@ String LEDSingle::Get_Current_State()
 /* callback function that will be called when message with MQTT_Get_topic() is received */
 void LEDSingle::MQTT_Message_Subscribe(const String& message){
   LedCommand command = LedCommand::Unknown;
-  if (message == "On")
-    command = LedCommand::On;
-  else if(message == "Off")
-    command = LedCommand::Off;    
-  else if (message == "Toggle")
-    command = LedCommand::Toggle;
+  if (strcmp(message.c_str(), ON_COMMAND) == 0) command = LedCommand::On;
+  else if (strcmp(message.c_str(), OFF_COMMAND) == 0) command = LedCommand::Off;    
+  else if (strcmp(message.c_str(), TOGGLE_COMMAND) == 0) command = LedCommand::Toggle;
   
   Process_Command(command);
 }

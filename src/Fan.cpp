@@ -1,6 +1,9 @@
 #include "../inc/Debug.h"
 #include "../inc/Fan.h"
 
+constexpr const char Fan::START_COMMAND[];
+constexpr const char Fan::STOP_COMMAND[];
+
 /*###########################################################################################################################################*/
 /*
  *
@@ -38,10 +41,8 @@ String Fan::Get_Current_State()
 /* callback function that will be called when message with MQTT_Get_topic() is received */
 void Fan::MQTT_Message_Subscribe(const String& message)
 {
-    if (message == "start")
-        Start();
-    else if (message == "stop")
-        Stop();
+    if (strcmp(message.c_str(), START_COMMAND) == 0) Start();
+    else if (strcmp(message.c_str(), STOP_COMMAND) == 0) Stop();
 }
 
 /*###########################################################################################################################################*/

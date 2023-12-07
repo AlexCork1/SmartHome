@@ -2,6 +2,10 @@
 #include "../inc/Debug.h"
 #include <sstream>
 
+constexpr const char LEDRGB::ON_COMMAND[];
+constexpr const char LEDRGB::OFF_COMMAND[];
+constexpr const char LEDRGB::TOGGLE_COMMAND[];
+
 /*###########################################################################################################################################*/
 /*
 *
@@ -40,14 +44,10 @@ String LEDRGB::Get_Current_State(){
 void LEDRGB::MQTT_Message_Subscribe(const String& message){
   RgbLedCommand command = RgbLedCommand::Unknown;
 
-  if (message == "On")
-    command = RgbLedCommand::On;
-  else if (message == "Off")
-    command = RgbLedCommand::Off;    
-  else if (message == "Toggle")
-    command = RgbLedCommand::Toggle;
-  else if(message.startsWith("SetColor"))
-    command = RgbLedCommand::SetColor;
+  if (strcmp(message.c_str(), ON_COMMAND) == 0) command = RgbLedCommand::On;
+  else if (strcmp(message.c_str(), OFF_COMMAND) == 0) command = RgbLedCommand::Off; 
+  else if (strcmp(message.c_str(), TOGGLE_COMMAND) == 0) command = RgbLedCommand::Toggle;
+  else if(message.startsWith("SetColor")) command = RgbLedCommand::SetColor;
 
   Process_Command(command, message);
 }

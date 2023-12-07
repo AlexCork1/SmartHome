@@ -20,6 +20,9 @@ private:
     static constexpr const char* JSON_FORMAT = "{\"state\":%c}";
     char jsonBuffer[JSON_BUFFER_SIZE];
 
+    static constexpr char START_COMMAND[] = "start";
+    static constexpr char STOP_COMMAND[] = "stop";
+
     void Start();
     void Stop();
 };

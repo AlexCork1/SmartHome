@@ -40,6 +40,10 @@ class LEDRGB : public LED {
           "\"2\": [%03d,%03d,%03d],"
           "\"3\": [%03d,%03d,%03d] }";
     char jsonBuffer[JSON_BUFFER_SIZE];
+    
+    static constexpr char ON_COMMAND[] = "On";
+    static constexpr char OFF_COMMAND[] = "Off";
+    static constexpr char TOGGLE_COMMAND[] = "Toggle";
 
     void On() override;
     void Off() override;

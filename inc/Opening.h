@@ -4,7 +4,6 @@ class Opening : public Device
 {
   public:
     enum class OpeningState { Open, Closed };
-    enum class OpeningCommand { Open, Close, Unknown };
 
     Opening(const char* topic, uint8_t pin_number, uint32_t channel_number);
 
@@ -30,5 +29,4 @@ class Opening : public Device
 
     void Open();
     void Close();
-    void Process_Command(OpeningCommand command);
 };
