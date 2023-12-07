@@ -32,10 +32,10 @@ Fan::Fan(const char* topic) : Device(topic){
  *
  */
 /*###########################################################################################################################################*/
-String Fan::Get_Current_State()
+const char* Fan::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _runningState ? '1' : '0');
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

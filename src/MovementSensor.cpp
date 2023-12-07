@@ -34,10 +34,10 @@ void MovementSensor::Detected(){
     _moveDetected = true;
 }
 
-String MovementSensor::Get_Current_State()
+const char* MovementSensor::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _moveDetected ? '1' : '0');
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 int32_t MovementSensor::Read_State() const{

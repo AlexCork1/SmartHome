@@ -32,14 +32,14 @@ LEDRGB::LEDRGB(const char* topic) :
 *
 */
 /*###########################################################################################################################################*/
-String LEDRGB::Get_Current_State(){
+const char* LEDRGB::Get_Current_State(){
   snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT,
            (_ledState == LedState::On) ? '1' : '0',
            _led0.red, _led0.green, _led0.blue,
            _led1.red, _led1.green, _led1.blue,
            _led2.red, _led2.green, _led2.blue,
            _led3.red, _led3.green, _led3.blue);
-  return String(jsonBuffer);
+  return jsonBuffer;
 }
 void LEDRGB::MQTT_Message_Subscribe(const String& message){
   RgbLedCommand command = RgbLedCommand::Unknown;

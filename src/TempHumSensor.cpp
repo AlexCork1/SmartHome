@@ -48,10 +48,10 @@ bool TempHumSensor::Read_Humidity(){
     return true;
 }
 
-String TempHumSensor::Get_Current_State()
+const char* TempHumSensor::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _temperature, _humidity);
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 /*###########################################################################################################################################*/

@@ -32,9 +32,9 @@ void Button::Reset(){
     _buttonState = false;
 }
 
-String Button::Get_Current_State(){
+const char* Button::Get_Current_State(){
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _buttonState ? '1' : '0');
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 

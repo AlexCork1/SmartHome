@@ -30,7 +30,7 @@ void LCDdisplay::Init()
 *
 */
 /*###########################################################################################################################################*/
-String LCDdisplay::Get_Current_State()
+const char* LCDdisplay::Get_Current_State()
 {
   StaticJsonDocument<200> doc;
   for(uint32_t i = 0; i < LCDdisplay::NO_ROWS; i++)
@@ -38,7 +38,7 @@ String LCDdisplay::Get_Current_State()
 
   String output;
   serializeJson(doc, output);
-  return output;
+  return output.c_str();
 }
 
 /// @param message : JSON format

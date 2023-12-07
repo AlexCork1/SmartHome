@@ -34,10 +34,10 @@ void GasSensor::Set_Alarm(){
     _gasState = true;
 }
 
-String GasSensor::Get_Current_State()
+const char* GasSensor::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _gasState ? '1' : '0');
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 /*###########################################################################################################################################*/

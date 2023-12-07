@@ -13,13 +13,13 @@ struct MelodyMapping {
 class Sound : public Device
 {
   public:
-    Sound(const char* topic, void (*mqtt_publish)(String, String));
+    Sound(const char* topic, void (*mqtt_publish)(const char*, const char*));
     
-    String Get_Current_State() override;
+    const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
 
   private:
-    void (*_mqtt_publish)(String, String);
+    void (*_mqtt_publish)(const char*, const char*);
     int8_t melody_playing_state;
     char melody_playing[20];
 
@@ -34,6 +34,6 @@ class Sound : public Device
     void Play_Melody(MelodyMapping melody);
     
     static constexpr uint8_t JSON_BUFFER_SIZE = 50;
-    static constexpr const char* JSON_FORMAT = "{\"state\":%d, \"music\":\"%s\"}";
+    static constexpr const char* JSON_FORMAT = "{\"state\":%d, \"music\":\"%s\"}\0";
     char jsonBuffer[JSON_BUFFER_SIZE];
 };

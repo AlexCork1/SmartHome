@@ -17,7 +17,7 @@ class LEDRGB : public LED {
     enum class RgbLedCommand { On, Off, Toggle, SetColor, Unknown };
     LEDRGB(const char* topic);
 
-    String Get_Current_State() override;
+    const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
 
   private:
@@ -38,7 +38,7 @@ class LEDRGB : public LED {
           "\"0\": [%03d,%03d,%03d],"
           "\"1\": [%03d,%03d,%03d],"
           "\"2\": [%03d,%03d,%03d],"
-          "\"3\": [%03d,%03d,%03d] }";
+          "\"3\": [%03d,%03d,%03d] }\0";
     char jsonBuffer[JSON_BUFFER_SIZE];
     
     static constexpr char ON_COMMAND[] = "On";

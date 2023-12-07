@@ -29,10 +29,10 @@ bool SteamSensor::Get_Data(){
     return false;
 }
 /* return single LED state as String */
-String SteamSensor::Get_Current_State()
+const char* SteamSensor::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _data);
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 /*###########################################################################################################################################*/

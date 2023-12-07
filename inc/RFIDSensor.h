@@ -12,7 +12,7 @@ class RFIDSensor : public Device
 
     String ReadRFIDCard();
 
-    String Get_Current_State() override { /* NOTHING - it is only sending data. Check ino file */ }
+    const char* Get_Current_State() override { return "";/* NOTHING - it is only sending data. Check ino file */ }
     void MQTT_Message_Subscribe(const String& message) override { /* NOTHING - it is only sending data. Check ino file */ }
     
   private:

@@ -15,7 +15,7 @@ class TempHumSensor : public Device
     float Get_Temperature() const { return _temperature; }
     float Get_Humidity() const { return _humidity; }
 
-    String Get_Current_State() override;
+    const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override { /* NOTHING - it is only sending data. Check ino file */ }
 
   private:
@@ -31,6 +31,6 @@ class TempHumSensor : public Device
     //#define DHTTYPE DHT21   // DHT 21 (AM2301)
     
     static constexpr uint8_t JSON_BUFFER_SIZE = 50;
-    static constexpr const char* JSON_FORMAT = "{\"temp\":\"%.2f\",\"hum\":\"%.2f\"}";
+    static constexpr const char* JSON_FORMAT = "{\"temp\":\"%.2f\",\"hum\":\"%.2f\"}\0";
     char jsonBuffer[JSON_BUFFER_SIZE];
 };

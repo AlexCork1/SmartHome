@@ -9,7 +9,7 @@
  *
  */
 /*###########################################################################################################################################*/
-Sound::Sound(const char* topic, void (*mqtt_publish)(String, String)) : 
+Sound::Sound(const char* topic, void (*mqtt_publish)(const char*, const char*)) : 
     Device(topic),
     _mqtt_publish(mqtt_publish)
 {
@@ -25,10 +25,10 @@ Sound::Sound(const char* topic, void (*mqtt_publish)(String, String)) :
  */
 /*###########################################################################################################################################*/
 /* return single LED state as String */
-String Sound::Get_Current_State()
+const char* Sound::Get_Current_State()
 {
-    snprintf(jsonBuffer, JSON_BUFFER_SIZE, "{\"state\":%d, \"music\":\"%s\"}", melody_playing_state, melody_playing);
-    return String(jsonBuffer);
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, melody_playing_state, melody_playing);
+    return jsonBuffer;
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

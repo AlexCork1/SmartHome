@@ -31,10 +31,10 @@ Opening::Opening(
  *
  */
 /*###########################################################################################################################################*/
-String Opening::Get_Current_State()
+const char* Opening::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _openingState == OpeningState::Open ? '1' : '0');
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

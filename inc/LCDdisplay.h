@@ -7,7 +7,7 @@ class LCDdisplay : public Device{
 public:
     LCDdisplay(const char* topic);
 
-    String Get_Current_State() override;
+    const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
     
     void Init();

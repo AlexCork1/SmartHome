@@ -22,7 +22,7 @@ This file is not uploaded on github. You need to add it and fill it with followi
  *     function prototypes
  */
 /*###############################################################################################################*/
-void Publish(String topic, String message);
+void Publish(const char* topic, const char* message);
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length);
 void MQTT_register_topics();
 void IRAM_ATTR ISR_GASSensor();
@@ -113,29 +113,33 @@ void Inits()
   // set timer 0 in microsecs
 	if (ITimer0.attachInterruptInterval(TIMER0_INTERVAL_MS * 1000, TimerHandler0))
   {
-		Debug(F("Starting  ITimer0 OK, millis() = ")); Debugln(millis());
+		Debug(F("Starting  ITimer0 OK, millis() = "));
+    Debugln(millis());
   }
-	else
+	else{
 		Debugln(F("Can't set ITimer0. Select another Timer, freq. or timer"));
+  }
   timerISR = false;
 }
 
 //MQTT callback function
 void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 {
-  String topicStr = String(topic);
   String message;
-  for (uint32_t i = 0; i < length; i++) message += (char)messageByte[i];
+  for (uint32_t i = 0; i < length; i++)
+    message += (char)messageByte[i];
 
-  Debug(topicStr); Debug(" "); Debugln(message);
+  Debug(topic); Debug(" "); Debugln(message);
 
 
   //check if topic is to get all devices (usually done on client application start)
-  if (topicStr == MQTT_TOPIC_ALL)
+  if (strcmp(topic, MQTT_TOPIC_ALL) == 0)
   {
     Debugln("All topic demand");
     for (auto device : list_of_devices) 
-      connectToServer.Publish(device->Get_MQTT_topic() + String(MQTT_TOPIC_UPDATE_APPENDIX), device->Get_Current_State());
+      connectToServer.Publish(
+        (device->Get_MQTT_topic() + String(MQTT_TOPIC_UPDATE_APPENDIX)).c_str(),
+        device->Get_Current_State());
     return;
   }
 
@@ -162,14 +166,17 @@ void MQTT_register_topics(){
     connectToServer.RegisterTopic(device->Get_MQTT_topic());
 }
 
-void Publish(String topic, String message){
-    connectToServer.Publish(topic  + MQTT_TOPIC_UPDATE_APPENDIX, message);
+void Publish(const char* topic, const char* message){
+    connectToServer.Publish(
+      (topic  + String(MQTT_TOPIC_UPDATE_APPENDIX)).c_str(),
+      message);
 }
 
 void inline Process_RFID(){
   //check if any RFID card was detected
   String rfidPassword = rfid.ReadRFIDCard();
-  if (rfidPassword.length() > 0) Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
+  if (rfidPassword.length() > 0)
+    Publish(rfid.Get_MQTT_topic(), rfidPassword.c_str());
 }
 void inline Process_GASSensor(){
   //check if gas was detected

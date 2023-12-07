@@ -26,10 +26,10 @@ LEDSingle::LEDSingle(const char* topic) : LED(topic)
 */
 /*###########################################################################################################################################*/
 /* return single LED state as String */
-String LEDSingle::Get_Current_State()
+const char* LEDSingle::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _ledState == LedState::On ? '1' : '0');
-    return String(jsonBuffer);
+    return jsonBuffer;
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */

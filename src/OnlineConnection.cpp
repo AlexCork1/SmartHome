@@ -54,13 +54,13 @@ void OnlineConnection::Loop(){
 }
 
 /* Send message to MQTT server with specific topic */
-void OnlineConnection::Publish(String topic, String message){
-  _client.publish(topic.c_str(), message.c_str());
+void OnlineConnection::Publish(const char* topic, const char* message){
+  _client.publish(topic, message);
 }
 
 /* We need to register each topic we wish to listent to */
-void OnlineConnection::RegisterTopic(String topic){
-  _client.subscribe(topic.c_str());
+void OnlineConnection::RegisterTopic(const char* topic){
+  _client.subscribe(topic);
 }
 
 /*###########################################################################################################################################*/
@@ -121,7 +121,7 @@ void OnlineConnection::MQTT_Connect(){
 void OnlineConnection::MQTT_Reconnect(){
   while (!_client.connected()) {
     Debug("Attempting to reconnect to MQTT server....");
-    String clientId = "SmartHouse_Keyestudio-";
+    String clientId("SmartHouse-");
     clientId += String(random(0xffff), HEX);
 
     //try to connect with username and password
