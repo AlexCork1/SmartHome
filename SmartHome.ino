@@ -135,14 +135,14 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
   {
     Debugln("All topic demand");
     for (auto device : list_of_devices) 
-      connectToServer.Publish(device->Get_MQTT_topic() + MQTT_TOPIC_UPDATE_APPENDIX, device->Get_Current_State());
+      connectToServer.Publish(device->Get_MQTT_topic() + String(MQTT_TOPIC_UPDATE_APPENDIX), device->Get_Current_State());
     return;
   }
 
   //find correct device for recevied message
   for (auto device : list_of_devices)
   {
-    if (device->Get_MQTT_topic() == String(topic))
+    if (strcmp(device->Get_MQTT_topic(), topic) == 0)
     {
       //process incoming message for this device
       device->MQTT_Message_Subscribe(message);
@@ -168,7 +168,7 @@ void Publish(String topic, String message){
 
 void inline Process_RFID(){
   //check if any RFID card was detected
-  String rfidPassword = rfid.Read();
+  String rfidPassword = rfid.ReadRFIDCard();
   if (rfidPassword.length() > 0) Publish(rfid.Get_MQTT_topic(), std::move(rfidPassword));
 }
 void inline Process_GASSensor(){
@@ -244,7 +244,7 @@ void loop()
  */
 /*###############################################################################################################*/
 void IRAM_ATTR ISR_GASSensor() {
-  if (gasSensor.ReadState() == HIGH)
+  if (gasSensor.Read_State() == HIGH)
     gasSensor.Set_Alarm();
   else
     gasSensor.Reset_Alarm();
@@ -268,7 +268,7 @@ void IRAM_ATTR ISR_ButtonRight_Click() {
   buttonRightDetectedChange = true;
 }
 void IRAM_ATTR ISR_MovementSensor() {
-  if (movement.ReadState() == HIGH)
+  if (movement.Read_State() == HIGH)
     movement.Detected();
   else
     movement.Reset();

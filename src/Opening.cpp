@@ -1,6 +1,9 @@
 #include "../inc/Debug.h"
 #include "../inc/Opening.h"
 
+constexpr const char Opening::OPEN_COMMAND[];
+constexpr const char Opening::CLOSE_COMMAND[];
+
 /*###########################################################################################################################################*/
 /*
  *

@@ -1,5 +1,4 @@
-#ifndef SOUND_DATA_H
-#define SOUND_DATA_H
+#pragma once
 
 #include "Device.h"
 #include "Songs.h"
@@ -26,17 +25,15 @@ class Sound : public Device
 
     static constexpr int8_t BUZZER_PIN = 25;
 
-    static constexpr MelodyMapping melody_mappings[3] = {
-        {"starwars\0", starwars_melody, sizeof(starwars_melody) / sizeof(starwars_melody[0]), 108},
-        {"got\0", game_of_thrones_melody, sizeof(game_of_thrones_melody) / sizeof(game_of_thrones_melody[0]), 85},
-        {"scale\0", musical_scale, sizeof(musical_scale) / sizeof(musical_scale[0]), 50}
+    MelodyMapping melody_mappings[3] = {
+      {"starwars\0", starwars_melody, sizeof(starwars_melody) / sizeof(starwars_melody[0]), 108},
+      {"got\0", game_of_thrones_melody, sizeof(game_of_thrones_melody) / sizeof(game_of_thrones_melody[0]), 85},
+      {"scale\0", musical_scale, sizeof(musical_scale) / sizeof(musical_scale[0]), 50}
     };
 
     void Play_Melody(MelodyMapping melody);
-
     
     static constexpr uint8_t JSON_BUFFER_SIZE = 50;
     static constexpr const char* JSON_FORMAT = "{\"state\":%d, \"music\":\"%s\"}";
     char jsonBuffer[JSON_BUFFER_SIZE];
 };
-#endif

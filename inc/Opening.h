@@ -24,6 +24,7 @@ class Opening : public Device
     static constexpr uint8_t JSON_BUFFER_SIZE = 20;
     static constexpr const char* JSON_FORMAT = "{\"state\":%c}";
     char jsonBuffer[JSON_BUFFER_SIZE];
+    
     static constexpr char OPEN_COMMAND[] = "open";
     static constexpr char CLOSE_COMMAND[] = "close";
 
