@@ -8,7 +8,7 @@
  *
  */
 /*###########################################################################################################################################*/
-TempHumSensor::TempHumSensor(String topic) : 
+TempHumSensor::TempHumSensor(const char* topic) : 
     Device(topic),
     _dht(TEMP_SENZOR_PIN, DHTTYPE)
 {
@@ -50,19 +50,8 @@ bool TempHumSensor::Read_Humidity(){
 
 String TempHumSensor::Get_Current_State()
 {
-    String response("{\"temp\" : \"");
-    response += String(_temperature);
-    response += "\",\"hum\" : \"";
-    response += String(_humidity);
-    response +=  "\" }";
-
-    Debug(response); Debug(" "); Debugln(response.length());
-
-    return response;
-}
-void TempHumSensor::MQTT_Message_Subscribe(String message)
-{
-    // Nothing to do here
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _temperature, _humidity);
+    return String(jsonBuffer);
 }
 
 /*###########################################################################################################################################*/
