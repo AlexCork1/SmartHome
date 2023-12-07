@@ -4,19 +4,21 @@
 class MovementSensor : public Device
 {
   public:
-    MovementSensor(String topic, void (*ISR_MovementSensor)());
+    MovementSensor(const char* topic, void (*ISR_MovementSensor)());
 
-    //reset
+    String Get_Current_State() override;
+    void MQTT_Message_Subscribe(const String& message) override { /* NOTHING - it is only sending data. Check ino file */ }
+
+    int32_t Read_State() const;
     void Reset();
     void Detected();
 
-    //functions dervied from Device class
-    String Get_Current_State();
-    void MQTT_Message_Subscribe(String message);
-    int32_t ReadState();
-
   private:
-    bool _move_detected;
+    bool _moveDetected;
 
     const int8_t PIR_SENSOR_PIN = 14;
+
+    static constexpr uint8_t JSON_BUFFER_SIZE = 20;
+    static constexpr const char* JSON_FORMAT = "{\"state\":%c}";
+    char jsonBuffer[JSON_BUFFER_SIZE];
 };
