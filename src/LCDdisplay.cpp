@@ -9,13 +9,11 @@
 *
 */
 /*###########################################################################################################################################*/
-LCDdisplay::LCDdisplay(String topic) :
+LCDdisplay::LCDdisplay(const char* topic) :
   Device(topic),
-  _display(MY_I2C_ADDRESS, LCDdisplay::NO_COLUMNS, LCDdisplay::NO_ROWS)
+  _display(MY_I2C_ADDRESS, NO_COLUMNS, NO_ROWS)
 {
-  EMPTY_LINE = Get_Empty_Row();
-  for(uint32_t i = 0; i < NO_ROWS; i++)
-    _data_on_display[i] = EMPTY_LINE;  
+  Clear_Display();
 }
 
 void LCDdisplay::Init()
@@ -36,7 +34,7 @@ String LCDdisplay::Get_Current_State()
 {
   StaticJsonDocument<200> doc;
   for(uint32_t i = 0; i < LCDdisplay::NO_ROWS; i++)
-    doc[String(i)] = _data_on_display[i];
+    doc[String(i)] = _dataOnDisplay[i];
 
   String output;
   serializeJson(doc, output);
@@ -48,7 +46,7 @@ String LCDdisplay::Get_Current_State()
 ///   '0': "text to be put in row 0",
 ///   '1': "text to be put in row 1"
 /// }
-void LCDdisplay::MQTT_Message_Subscribe(String message)
+void LCDdisplay::MQTT_Message_Subscribe(const String& message)
 {
 	//LCD display is composed of N rows and 16 columns
   Clear_Display();
@@ -58,10 +56,16 @@ void LCDdisplay::MQTT_Message_Subscribe(String message)
   
   for (int i = 0; i < NO_ROWS; i++){
     String temp = doc[String(i)].as<String>();
-    if(temp != "null")
-      _data_on_display[i] = temp;
+    if(temp != "null"){
+      //get data from current row
+      auto& currentRow = _dataOnDisplay[i];
+      //write empty string to it ("delete it")
+      Clear_Row(currentRow);
+      //copy new data into its place
+      strncpy(currentRow.data(), temp.c_str(), std::min(NO_COLUMNS, (uint8_t)temp.length()));
+    }
 
-    Write_Message(_data_on_display[i], i, 0);
+    Write_Message(_dataOnDisplay[i], i, 0);
   }
 }
 
@@ -72,23 +76,22 @@ void LCDdisplay::MQTT_Message_Subscribe(String message)
 *
 */
 /*###########################################################################################################################################*/
-void LCDdisplay::Write_Message(String message, uint32_t row, uint32_t column){
+void LCDdisplay::Write_Message(const std::array<char, NO_COLUMNS>& message, uint32_t row, uint32_t column){
   if (row >= NO_ROWS) return;
   if (column >= NO_COLUMNS) return;
 
-  Debug(row); Debug(" "); Debug(column); Debug(" "); Debugln(message);
-
   _display.setCursor(column, row);
-  _display.print(message);
+  _display.print(message.data());
 }
+
 void LCDdisplay::Clear_Display(){
-  _display.clear();
+  for (auto& row : _dataOnDisplay)
+    Clear_Row(row);
 }
-void LCDdisplay::Clear_Row(uint32_t row){
-  if (row >= NO_ROWS) return;
 
-  _display.setCursor(0, row);
+void LCDdisplay::Clear_Row(std::array<char, NO_COLUMNS>& row){
+  std::fill(row.begin(), row.end(), ' ');
 
-  //simple way of "clearing" row is to write empty char
-  _display.print(EMPTY_LINE);
+  _display.setCursor(0, &row - &_dataOnDisplay[0]);
+  _display.print(row.data());
 }
