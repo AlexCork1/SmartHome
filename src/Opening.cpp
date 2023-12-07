@@ -9,15 +9,15 @@
  */
 /*###########################################################################################################################################*/
 Opening::Opening(
-    String topic,
+    const char*  topic,
     uint8_t pin_number,
     uint32_t channel_number) :
     Device(topic),
-    _pin_number(pin_number),
-    _channel_number(channel_number)
+    _pinNumber(pin_number),
+    _channelNumber(channel_number)
 {
-    ledcSetup(_channel_number, FREQUENCY, RESOLUTION);
-    ledcAttachPin(_pin_number, _channel_number);
+    ledcSetup(_channelNumber, FREQUENCY, RESOLUTION);
+    ledcAttachPin(_pinNumber, _channelNumber);
     Close();
 }
 
@@ -28,23 +28,20 @@ Opening::Opening(
  *
  */
 /*###########################################################################################################################################*/
-/* return single LED state as String */
 String Opening::Get_Current_State()
 {
-    return "{ \"state\":" + String(_opening_state) + " }";
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _openingState == OpeningState::Open ? '1' : '0');
+    return String(jsonBuffer);
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
-void Opening::MQTT_Message_Subscribe(String message)
+void Opening::MQTT_Message_Subscribe(const String& message)
 {
-    if (message == "open")
-        Open();
-    else if (message == "close")
-        Close();
-    else
-    {
-        Debugln("Unrecognized message");
-    }
+    OpeningCommand command = OpeningCommand::Unknown;
+    if (strcmp(message.c_str(), OPEN_COMMAND) == 0) command = OpeningCommand::Open;
+    else if (strcmp(message.c_str(), CLOSE_COMMAND) == 0) command = OpeningCommand::Close;
+    
+    Process_Command(command);
 }
 
 /*###########################################################################################################################################*/
@@ -57,13 +54,30 @@ void Opening::MQTT_Message_Subscribe(String message)
 /* Open window/door */
 void Opening::Open()
 {
-    _opening_state = true;
-    ledcWrite(_channel_number, OPEN_STATE);
+    _openingState = OpeningState::Open;
+    ledcWrite(_channelNumber, OPEN_STATE);
 }
 
 /* Close window/door  */
 void Opening::Close()
 {
-    _opening_state = false;
-    ledcWrite(_channel_number, CLOSED_STATE);
+    _openingState = OpeningState::Closed;
+    ledcWrite(_channelNumber, CLOSED_STATE);
+}
+
+void Opening::Process_Command(OpeningCommand command){
+    switch (command)
+    {
+    case OpeningCommand::Open:
+        Open();
+        break;
+    
+    case OpeningCommand::Close:
+        Close();
+        break;
+
+    default:
+        Debugln("Opening :: Unknown command");
+        break;
+    }
 }
