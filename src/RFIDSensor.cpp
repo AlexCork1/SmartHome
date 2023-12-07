@@ -9,9 +9,7 @@
  *
  */
 /*###########################################################################################################################################*/
-RFIDSensor::RFIDSensor(
-    String topic
-    ) :
+RFIDSensor::RFIDSensor(const char* topic) :
     Device(topic), 
     _mfrc522(MY_I2C_ADDRESS_RFID)
 {
@@ -26,7 +24,7 @@ RFIDSensor::RFIDSensor(
  *
  */
 /*###########################################################################################################################################*/
-String RFIDSensor::Read()
+String RFIDSensor::ReadRFIDCard()
 {
     // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
     // Select one of the cards.
@@ -48,20 +46,10 @@ String RFIDSensor::Read()
     Debugln(password);
     password += "\"}";
 
-    if (_oldPassword == password){
-        return "";
-    }
+    if (_oldPassword == password) return "";
     
     _oldPassword = password;
     return std::move(password);
-}
-String RFIDSensor::Get_Current_State()
-{
-    // TODO
-}
-void RFIDSensor::MQTT_Message_Subscribe(String message)
-{
-    // Nothing to do here
 }
 
 /*###########################################################################################################################################*/

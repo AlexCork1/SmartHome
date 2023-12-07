@@ -8,15 +8,15 @@
 class RFIDSensor : public Device
 {
   public:
-    RFIDSensor(String topic);
-    String Read();
+    RFIDSensor(const char* topic);
 
-    //functions dervied from Device class
-    String Get_Current_State();
-    void MQTT_Message_Subscribe(String message);
+    String ReadRFIDCard();
+
+    String Get_Current_State() override { /* NOTHING - it is only sending data. Check ino file */ }
+    void MQTT_Message_Subscribe(const String& message) override { /* NOTHING - it is only sending data. Check ino file */ }
     
   private:
-    const uint16_t MY_I2C_ADDRESS_RFID = 0x28;
+    static constexpr uint16_t MY_I2C_ADDRESS_RFID = 0x28;
     MFRC522 _mfrc522;   // create MFRC522.
     String _oldPassword;
 };
