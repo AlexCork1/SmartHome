@@ -7,8 +7,7 @@
  *
  */
 /*###########################################################################################################################################*/
-SteamSensor::SteamSensor(String topic) :
-    Device(topic)
+SteamSensor::SteamSensor(const char* topic) : Device(topic)
 {
 
 }
@@ -32,16 +31,8 @@ bool SteamSensor::Get_Data(){
 /* return single LED state as String */
 String SteamSensor::Get_Current_State()
 {
-    String respond("{\"steam\": \"");
-    respond += String(_data);
-    respond += "\"}";
-    return std::move(respond);
-}
-
-/* callback function that will be called when message with MQTT_Get_topic() is received */
-void SteamSensor::MQTT_Message_Subscribe(String message)
-{
-    // NOTHING - it is only send data
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _data);
+    return String(jsonBuffer);
 }
 
 /*###########################################################################################################################################*/
