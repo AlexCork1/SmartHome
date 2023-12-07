@@ -91,7 +91,7 @@
 #define NOTE_DS8 4978
 #define REST 0
 
-static int32_t starwars_melody[] = {
+static constexpr int32_t starwars_melody[] = {
   // Dart Vader theme (Imperial March) - Star wars 
   // Score available at https://musescore.com/user/202909/scores/1141521
   // The tenor saxophone part was used
@@ -117,7 +117,7 @@ static int32_t starwars_melody[] = {
   NOTE_C6,1
 };
 
-static int32_t game_of_thrones_melody[] = {
+static constexpr int32_t game_of_thrones_melody[] = {
 
   // Game of Thrones
   // Score available at https://musescore.com/user/8407786/scores/2156716
@@ -170,7 +170,7 @@ static int32_t game_of_thrones_melody[] = {
   NOTE_C6,8, NOTE_G5,16, NOTE_GS5,16, NOTE_AS5,16, NOTE_C6,8, NOTE_G5,8, NOTE_GS5,16, NOTE_AS5,16,  
 };
 
-static int32_t musical_scale[] = {
+static constexpr int32_t musical_scale[] = {
     NOTE_C4,
     8,
     NOTE_D4,

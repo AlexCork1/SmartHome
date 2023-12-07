@@ -8,11 +8,11 @@
  *
  */
 /*###########################################################################################################################################*/
-Sound::Sound(String topic, void (*mqtt_publish)(String, String)) : 
+Sound::Sound(const char* topic, void (*mqtt_publish)(String, String)) : 
     Device(topic),
     _mqtt_publish(mqtt_publish)
 {
-    melody_playing = String();
+    melody_playing[0] = '\0'; // Initialize the array with an empty string
     melody_playing_state = -1;
 }
 
@@ -26,12 +26,12 @@ Sound::Sound(String topic, void (*mqtt_publish)(String, String)) :
 /* return single LED state as String */
 String Sound::Get_Current_State()
 {
-  return  "{ \"state\":\"" + String(melody_playing_state) + "\","
-            "\"music\":\"" + melody_playing + "\"}";
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, "{\"state\":%d, \"music\":\"%s\"}", melody_playing_state, melody_playing);
+    return String(jsonBuffer);
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
-void Sound::MQTT_Message_Subscribe(String message)
+void Sound::MQTT_Message_Subscribe(const String& message)
 {
     // find melody to play
     for (uint32_t i = 0; i < sizeof(melody_mappings) / sizeof(melody_mappings[0]); i++)
@@ -39,14 +39,17 @@ void Sound::MQTT_Message_Subscribe(String message)
         if (message == melody_mappings[i].name)
         {
             melody_playing_state = i;
-            melody_playing = melody_mappings[i].name;
+            strncpy(melody_playing, melody_mappings[i].name, sizeof(melody_playing) - 1);
+            melody_playing[sizeof(melody_playing) - 1] = '\0'; // Ensure null-termination
+
             //notify that we are playing music
             _mqtt_publish(Get_MQTT_topic(), Get_Current_State());
 
             Play_Melody(melody_mappings[i]);
 
             melody_playing_state = -1;
-            melody_playing = String();
+            melody_playing[0] = '\0'; // Reset the array
+
             //notify that we stoped playing music
             _mqtt_publish(Get_MQTT_topic(), Get_Current_State());
             break;
