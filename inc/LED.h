@@ -3,15 +3,17 @@
 
 #include "Device.h"
 
+
 class LED : public Device
 {
   public:
-    LED(String topic) : Device(topic){}
+    enum class LedState { Off, On };
+    LED(const char* topic) : Device(topic), _ledState(LedState::Off){}
     virtual void On() = 0;
     virtual void Off() = 0;
     virtual void Toggle() = 0;
 
   protected:
-    bool _led_state;
+    LedState _ledState;
 };
 #endif
