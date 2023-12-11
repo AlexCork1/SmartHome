@@ -19,6 +19,9 @@ SteamSensor::SteamSensor(const char* topic) : Device(topic)
  *
  */
 /*###########################################################################################################################################*/
+void SteamSensor::Init(){
+    
+}
 bool SteamSensor::Get_Data(){
     int32_t temp = analogRead(STEAM_SENSOR_PIN);
     if (temp != _data){

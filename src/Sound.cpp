@@ -13,8 +13,6 @@ Sound::Sound(const char* topic, void (*mqtt_publish)(const char*, const char*)) 
     Device(topic),
     _mqtt_publish(mqtt_publish)
 {
-    melody_playing[0] = '\0'; // Initialize the array with an empty string
-    melody_playing_state = -1;
 }
 
 /*###########################################################################################################################################*/
@@ -24,6 +22,11 @@ Sound::Sound(const char* topic, void (*mqtt_publish)(const char*, const char*)) 
  *
  */
 /*###########################################################################################################################################*/
+void Sound::Init()
+{
+    melody_playing[0] = '\0'; // Initialize the array with an empty string
+    melody_playing_state = -1;
+}
 /* return single LED state as String */
 const char* Sound::Get_Current_State()
 {

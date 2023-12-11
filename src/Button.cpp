@@ -11,10 +11,7 @@
 Button::Button(const char* topic, uint8_t pin_number, void (*ISR_Button)() ) :
     Device(topic), _pinNumber(pin_number)
 {
-    pinMode(_pinNumber, INPUT);
-
-    // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(_pinNumber), ISR_Button, CHANGE);
+    _ISR_Button = ISR_Button;
 }
 
 /*###########################################################################################################################################*/
@@ -24,6 +21,12 @@ Button::Button(const char* topic, uint8_t pin_number, void (*ISR_Button)() ) :
  *
  */
 /*###########################################################################################################################################*/
+void Button::Init(){
+    pinMode(_pinNumber, INPUT);
+
+    // we will use isr approach
+    attachInterrupt(digitalPinToInterrupt(_pinNumber), _ISR_Button, CHANGE);
+}
 void Button::Pressed()
 {
     _buttonState = true;

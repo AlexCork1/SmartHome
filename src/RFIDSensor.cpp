@@ -13,8 +13,6 @@ RFIDSensor::RFIDSensor(const char* topic) :
     Device(topic), 
     _mfrc522(MY_I2C_ADDRESS_RFID)
 {
-    Wire.begin();        // initialize I2C
-    _mfrc522.PCD_Init(); // initialize MFRC522
 }
 
 /*###########################################################################################################################################*/
@@ -24,6 +22,10 @@ RFIDSensor::RFIDSensor(const char* topic) :
  *
  */
 /*###########################################################################################################################################*/
+void RFIDSensor::Init(){
+    Wire.begin();        // initialize I2C
+    _mfrc522.PCD_Init(); // initialize MFRC522
+}
 String RFIDSensor::ReadRFIDCard()
 {
     // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.

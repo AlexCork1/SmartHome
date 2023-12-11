@@ -76,8 +76,8 @@ volatile bool timerISR;
  */
 /*###############################################################################################################*/
 OnlineConnection connectToServer;
-constexpr int32_t TIMER0_INTERVAL_MS = 1000;
-ESP32Timer ITimer0(0);
+constexpr int32_t TIMER0_INTERVAL_MS = 60000;
+
 
 Device* list_of_devices[] = {
   &ledSingle,
@@ -105,11 +105,13 @@ Device* list_of_devices[] = {
 void Inits()
 {
   connectToServer.Init(ssid, password, mqtt_server, mqtt_username, mqtt_password, MQTT_message_callback, MQTT_register_topics);
-  lcdDisplay.Init();
+  for(auto device : list_of_devices) device->Init();
+
   gasSensorDetectedChange = false;
   buttonLeftDetectedChange = false;
   buttonRightDetectedChange = false;
 
+  ESP32Timer ITimer0(0);
   // set timer 0 in microsecs
 	if (ITimer0.attachInterruptInterval(TIMER0_INTERVAL_MS * 1000, TimerHandler0))
   {
@@ -119,6 +121,7 @@ void Inits()
 	else{
 		Debugln(F("Can't set ITimer0. Select another Timer, freq. or timer"));
   }
+  
   timerISR = false;
 }
 
@@ -133,7 +136,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 
 
   //check if topic is to get all devices (usually done on client application start)
-  if (strcmp(topic, MQTT_TOPIC_ALL) == 0)
+  /*if (strcmp(topic, MQTT_TOPIC_ALL) == 0)
   {
     Debugln("All topic demand");
     for (auto device : list_of_devices) 
@@ -141,7 +144,7 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
         (device->Get_MQTT_topic() + String(MQTT_TOPIC_UPDATE_APPENDIX)).c_str(),
         device->Get_Current_State());
     return;
-  }
+  }*/
 
   //find correct device for recevied message
   for (auto device : list_of_devices)
@@ -161,9 +164,10 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 
 //MQTT publish function
 void MQTT_register_topics(){
-  connectToServer.RegisterTopic(MQTT_TOPIC_ALL);
-  for(auto device : list_of_devices)
-    connectToServer.RegisterTopic(device->Get_MQTT_topic());
+  //connectToServer.RegisterTopic(MQTT_TOPIC_ALL);
+  //for(auto device : list_of_devices)
+  //  connectToServer.RegisterTopic(device->Get_MQTT_topic());
+  connectToServer.RegisterTopic("/smarthome/primaryhome/+/");
 }
 
 void Publish(const char* topic, const char* message){

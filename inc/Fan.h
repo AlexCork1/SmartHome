@@ -4,6 +4,7 @@ class Fan : public Device{
 public:
     Fan(const char* topic);
 
+    void Init() override;
     const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
 

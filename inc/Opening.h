@@ -7,6 +7,7 @@ class Opening : public Device
 
     Opening(const char* topic, uint8_t pin_number, uint32_t channel_number);
 
+    void Init();
     const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
 

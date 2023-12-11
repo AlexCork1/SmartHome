@@ -4,6 +4,7 @@ class GasSensor : public Device{
 public:
     GasSensor(const char* topic, void (*ISR_GASSensor)());
 
+    void Init() override;
     const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override { /* NOTHING - it is only sending data. Check ino file */ }
 
@@ -14,6 +15,7 @@ public:
 
  private:
     bool _gasState;
+    void (*_ISR_GASSensor)();
 
     static constexpr uint8_t GAS_SENSOR_PIN = 23;
 

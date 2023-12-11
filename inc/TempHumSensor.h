@@ -7,6 +7,8 @@ class TempHumSensor : public Device
 {
   public:
     TempHumSensor(const char* topic);
+
+    void Init() override;
     
     bool Read_All();
     bool Read_Temperature();

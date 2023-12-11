@@ -5,6 +5,7 @@ class LEDSingle : public LED {
     enum class LedCommand { On, Off, Toggle, Unknown };
     LEDSingle(const char* topic);
 
+    void Init() override;
     const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
 

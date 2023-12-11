@@ -15,7 +15,6 @@ constexpr const char LEDSingle::TOGGLE_COMMAND[];
 /*###########################################################################################################################################*/
 LEDSingle::LEDSingle(const char* topic) : LED(topic)
 {
-  pinMode(SINGLE_LED_PIN, OUTPUT);
 }
 
 /*###########################################################################################################################################*/
@@ -25,6 +24,9 @@ LEDSingle::LEDSingle(const char* topic) : LED(topic)
 *
 */
 /*###########################################################################################################################################*/
+void LEDSingle::Init(){
+  pinMode(SINGLE_LED_PIN, OUTPUT);
+}
 /* return single LED state as String */
 const char* LEDSingle::Get_Current_State()
 {

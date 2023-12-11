@@ -7,10 +7,10 @@ class LCDdisplay : public Device{
 public:
     LCDdisplay(const char* topic);
 
+    void Init() override;
     const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
     
-    void Init();
 
 private:
     static constexpr uint8_t MY_I2C_ADDRESS = 0x27;

@@ -21,8 +21,6 @@ LEDRGB::LEDRGB(const char* topic) :
   _led2(),
   _led3()
 {  
-  _rgbLights.begin(RGB_PIN, 4);
-  _rgbLights.brightness(BRIGHTNESS);
 }
 
 /*###########################################################################################################################################*/
@@ -32,6 +30,10 @@ LEDRGB::LEDRGB(const char* topic) :
 *
 */
 /*###########################################################################################################################################*/
+void LEDRGB::Init(){
+  _rgbLights.begin(RGB_PIN, 4);
+  _rgbLights.brightness(BRIGHTNESS);
+}
 const char* LEDRGB::Get_Current_State(){
   snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT,
            (_ledState == LedState::On) ? '1' : '0',
@@ -78,6 +80,8 @@ void LEDRGB::Toggle(){
 
 void LEDRGB::SetColor(RGB_LED rgbled)
 {
+  Debugln("SetColor : " + String(rgbled.ledNumber) + " " + String(rgbled.red) + " " + String(rgbled.green) + " " + String(rgbled.blue));
+
   //error checking
   if (rgbled.ledNumber >= 4){
     Debugln("LEDRGB :: SetColor :: Wrong led number");
@@ -115,9 +119,20 @@ void LEDRGB::Process_Command(RgbLedCommand command, const String& message){
 }
 RGB_LED LEDRGB::Parse_Color(const String& message) {
   RGB_LED led;
-  std::istringstream iss(message.c_str());
-  std::string setColor;
-  char dash;
-  iss >> setColor >> dash >> led.ledNumber >> dash >> led.red >> dash >> led.green >> dash >> led.blue;
+  //SetColor-1-255-255-0
+  int converted = std::sscanf(message.c_str(),
+    "SetColor-%u-%u-%u-%u", 
+    &led.ledNumber,
+    &led.red,
+    &led.green,
+    &led.blue);
+
+  if (converted != 4){
+    Debugln(F("LEDRGB ::: Parse color error"));
+    led.ledNumber = 0;
+    led.red = 0;
+    led.blue = 0;
+    led.green = 0;
+  }
   return led;
 }

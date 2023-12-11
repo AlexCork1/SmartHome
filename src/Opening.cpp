@@ -19,9 +19,6 @@ Opening::Opening(
     _pinNumber(pin_number),
     _channelNumber(channel_number)
 {
-    ledcSetup(_channelNumber, FREQUENCY, RESOLUTION);
-    ledcAttachPin(_pinNumber, _channelNumber);
-    Close();
 }
 
 /*###########################################################################################################################################*/
@@ -31,6 +28,11 @@ Opening::Opening(
  *
  */
 /*###########################################################################################################################################*/
+void Opening::Init(){
+    ledcSetup(_channelNumber, FREQUENCY, RESOLUTION);
+    ledcAttachPin(_pinNumber, _channelNumber);
+    Close();
+}
 const char* Opening::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _openingState == OpeningState::Open ? '1' : '0');

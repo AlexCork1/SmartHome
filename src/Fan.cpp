@@ -12,17 +12,6 @@ constexpr const char Fan::STOP_COMMAND[];
  */
 /*###########################################################################################################################################*/
 Fan::Fan(const char* topic) : Device(topic){
-    pinMode(FAN_DIR1_PIN, OUTPUT);
-    pinMode(FAN_DIR2_PIN, OUTPUT);
-
-    // analog write for ESP32
-    // https://espressif-docs.readthedocs-hosted.com/projects/arduino-esp32/en/latest/api/ledc.html
-    ledcSetup(CHANNEL_NUMBER, 1200, 8);
-    ledcAttachPin(FAN_DIR1_PIN, CHANNEL_NUMBER);
-
-    digitalWrite(FAN_DIR2_PIN, LOW);
-
-    Stop();
 }
 
 /*###########################################################################################################################################*/
@@ -32,6 +21,18 @@ Fan::Fan(const char* topic) : Device(topic){
  *
  */
 /*###########################################################################################################################################*/
+void Fan::Init(){
+    pinMode(FAN_DIR1_PIN, OUTPUT);
+    pinMode(FAN_DIR2_PIN, OUTPUT);
+    // analog write for ESP32
+    // https://espressif-docs.readthedocs-hosted.com/projects/arduino-esp32/en/latest/api/ledc.html
+    ledcSetup(CHANNEL_NUMBER, 1200, 8);
+    ledcAttachPin(FAN_DIR1_PIN, CHANNEL_NUMBER);
+
+    digitalWrite(FAN_DIR2_PIN, LOW);
+
+    Stop();
+}
 const char* Fan::Get_Current_State()
 {
     snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _runningState ? '1' : '0');

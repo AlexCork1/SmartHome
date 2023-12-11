@@ -17,6 +17,7 @@ class LEDRGB : public LED {
     enum class RgbLedCommand { On, Off, Toggle, SetColor, Unknown };
     LEDRGB(const char* topic);
 
+    void Init() override;
     const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
 

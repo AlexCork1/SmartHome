@@ -13,10 +13,7 @@ MovementSensor::MovementSensor(
     Device(topic),
     _moveDetected(false)
 {
-    pinMode(PIR_SENSOR_PIN, INPUT);
-
-    // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(PIR_SENSOR_PIN), ISR_MovementSensor, CHANGE);
+    _ISR_MovementSensor = ISR_MovementSensor;
 }
 
 /*###########################################################################################################################################*/
@@ -26,6 +23,12 @@ MovementSensor::MovementSensor(
  *
  */
 /*###########################################################################################################################################*/
+void MovementSensor::Init(){
+    pinMode(PIR_SENSOR_PIN, INPUT);
+
+    // we will use isr approach
+    attachInterrupt(digitalPinToInterrupt(PIR_SENSOR_PIN), _ISR_MovementSensor, CHANGE);
+}
 void MovementSensor::Reset()
 {
     _moveDetected = false;

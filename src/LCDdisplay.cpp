@@ -13,7 +13,6 @@ LCDdisplay::LCDdisplay(const char* topic) :
   Device(topic),
   _display(MY_I2C_ADDRESS, NO_COLUMNS, NO_ROWS)
 {
-  Clear_Display();
 }
 
 void LCDdisplay::Init()
@@ -21,6 +20,7 @@ void LCDdisplay::Init()
   _display.init();
   _display.backlight();
   _display.clear();
+  Clear_Display();
 }
 
 /*###########################################################################################################################################*/

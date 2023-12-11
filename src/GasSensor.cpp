@@ -10,12 +10,7 @@
 GasSensor::GasSensor(const char* topic, void (*ISR_GASSensor)()) 
     : Device(topic), _gasState(false)
 {
-    pinMode(GAS_SENSOR_PIN, INPUT);
-
-    // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(GAS_SENSOR_PIN), ISR_GASSensor, CHANGE);
-    
-    Reset_Alarm();
+    _ISR_GASSensor = ISR_GASSensor;
 }
 
 /*###########################################################################################################################################*/
@@ -25,7 +20,14 @@ GasSensor::GasSensor(const char* topic, void (*ISR_GASSensor)())
  *
  */
 /*###########################################################################################################################################*/
+void GasSensor::Init(){
+    pinMode(GAS_SENSOR_PIN, INPUT);
 
+    // we will use isr approach
+    attachInterrupt(digitalPinToInterrupt(GAS_SENSOR_PIN), _ISR_GASSensor, CHANGE);
+    
+    Reset_Alarm();
+}
 void GasSensor::Reset_Alarm()
 {
     _gasState = false;

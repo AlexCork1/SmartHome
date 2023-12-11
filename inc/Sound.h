@@ -15,6 +15,7 @@ class Sound : public Device
   public:
     Sound(const char* topic, void (*mqtt_publish)(const char*, const char*));
     
+    void Init() override;
     const char* Get_Current_State() override;
     void MQTT_Message_Subscribe(const String& message) override;
 

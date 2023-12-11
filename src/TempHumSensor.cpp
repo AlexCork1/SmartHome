@@ -12,7 +12,6 @@ TempHumSensor::TempHumSensor(const char* topic) :
     Device(topic),
     _dht(TEMP_SENZOR_PIN, DHTTYPE)
 {
-    _dht.begin();
 }
 
 /*###########################################################################################################################################*/
@@ -22,6 +21,10 @@ TempHumSensor::TempHumSensor(const char* topic) :
  *
  */
 /*###########################################################################################################################################*/
+
+void TempHumSensor::Init(){
+    _dht.begin();
+}
 
 bool TempHumSensor::Read_All()
 {
