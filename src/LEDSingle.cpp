@@ -13,7 +13,7 @@ constexpr const char LEDSingle::TOGGLE_COMMAND[];
 *
 */
 /*###########################################################################################################################################*/
-LEDSingle::LEDSingle(const char* topic) : LED(topic)
+LEDSingle::LEDSingle(const char* topic) : LED(topic), _ledState(LedState::Off)
 {
 }
 

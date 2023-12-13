@@ -6,15 +6,16 @@
 
 
 struct RGB_LED {
-  uint8_t ledNumber;  //LED ID
+  uint8_t ledNumber;        //LED red channel
   uint8_t red;        //LED red channel
   uint8_t green;      //LED green channel
   uint8_t blue;       //LED blue channel
 };
 
+
 class LEDRGB : public LED {
   public:
-    enum class RgbLedCommand { On, Off, Toggle, SetColor, Unknown };
+    enum class RgbLedCommand { SetColor, Unknown };
     LEDRGB(const char* topic);
 
     void Init() override;
@@ -33,22 +34,15 @@ class LEDRGB : public LED {
     #define LED_TYPE        LED_STRIP_SK6812
 
     static constexpr uint8_t JSON_BUFFER_SIZE = 100;
-    /// @brief 
+
     static constexpr const char* JSON_FORMAT = 
-          "{ \"state\":%c,"
-          "\"0\": [%03d,%03d,%03d],"
+          "{\"0\": [%03d,%03d,%03d],"
           "\"1\": [%03d,%03d,%03d],"
           "\"2\": [%03d,%03d,%03d],"
           "\"3\": [%03d,%03d,%03d] }\0";
-    char jsonBuffer[JSON_BUFFER_SIZE];
-    
-    static constexpr char ON_COMMAND[] = "On";
-    static constexpr char OFF_COMMAND[] = "Off";
-    static constexpr char TOGGLE_COMMAND[] = "Toggle";
 
-    void On() override;
-    void Off() override;
-    void Toggle() override;
+    char jsonBuffer[JSON_BUFFER_SIZE];
+
     void SetColor(RGB_LED rgbled);
     void Process_Command(RgbLedCommand command, const String& message);
     RGB_LED Parse_Color(const String& message);

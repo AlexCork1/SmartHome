@@ -10,6 +10,8 @@ class LEDSingle : public LED {
     void MQTT_Message_Subscribe(const String& message) override;
 
   private:
+    LedState _ledState;
+
     const uint8_t SINGLE_LED_PIN = 12; //YELLOW LED
     
     static constexpr uint8_t JSON_BUFFER_SIZE = 20;
@@ -20,8 +22,8 @@ class LEDSingle : public LED {
     static constexpr char OFF_COMMAND[] = "Off";
     static constexpr char TOGGLE_COMMAND[] = "Toggle";
 
-    void On() override;
-    void Off() override;
-    void Toggle() override;
+    void On();
+    void Off();
+    void Toggle();
     void Process_Command(LedCommand command);
 };
