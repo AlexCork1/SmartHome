@@ -24,6 +24,7 @@ TempHumSensor::TempHumSensor(const char* topic) :
 
 void TempHumSensor::Init(){
     _dht.begin();
+    Read_All();
 }
 
 bool TempHumSensor::Read_All()
