@@ -4,6 +4,7 @@
 //get all topics:        "/smarthome/primaryhome/+/";
 //get all topics update: "/smarthome/primaryhome/+/update";
 
+constexpr const char MQTT_TOPIC_INIT[]         = "/smarthome/primaryhome/init/";
 constexpr const char MQTT_TOPIC_LED_SINGLE[]   = "/smarthome/primaryhome/ledSingle/";
 constexpr const char MQTT_TOPIC_LED_RGB[]      = "/smarthome/primaryhome/ledRGB/";
 constexpr const char MQTT_TOPIC_LCD[]          = "/smarthome/primaryhome/lcd/";
