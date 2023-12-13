@@ -2,6 +2,7 @@
 
 class Fan : public Device{
 public:
+    enum class FanState { Running, Stop };
     Fan(const char* topic);
 
     void Init() override;
@@ -9,7 +10,7 @@ public:
     void MQTT_Message_Subscribe(const String& message) override;
 
 private:
-    bool _runningState;
+    FanState _runningState;
     
     static constexpr uint8_t FAN_DIR1_PIN = 18;
     static constexpr uint8_t FAN_DIR2_PIN = 19;
@@ -23,7 +24,9 @@ private:
 
     static constexpr char START_COMMAND[] = "start";
     static constexpr char STOP_COMMAND[] = "stop";
+    static constexpr char TOGGLE_COMMAND[] = "toggle";
 
     void Start();
     void Stop();
+    void Toggle();
 };

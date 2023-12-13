@@ -3,6 +3,7 @@
 
 constexpr const char Fan::START_COMMAND[];
 constexpr const char Fan::STOP_COMMAND[];
+constexpr const char Fan::TOGGLE_COMMAND[];
 
 /*###########################################################################################################################################*/
 /*
@@ -35,7 +36,7 @@ void Fan::Init(){
 }
 const char* Fan::Get_Current_State()
 {
-    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _runningState ? '1' : '0');
+    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, _runningState == FanState::Running  ? '1' : '0');
     return jsonBuffer;
 }
 
@@ -44,6 +45,7 @@ void Fan::MQTT_Message_Subscribe(const String& message)
 {
     if (strcmp(message.c_str(), START_COMMAND) == 0) Start();
     else if (strcmp(message.c_str(), STOP_COMMAND) == 0) Stop();
+    else if (strcmp(message.c_str(), TOGGLE_COMMAND) == 0) Toggle();
 }
 
 /*###########################################################################################################################################*/
@@ -55,13 +57,20 @@ void Fan::MQTT_Message_Subscribe(const String& message)
 /*###########################################################################################################################################*/
 void Fan::Start()
 {   /* Start fan*/
-    _runningState = true;
+    _runningState = FanState::Running;
     ledcWrite(CHANNEL_NUMBER, FAN_ON);
 }
 
 
 void Fan::Stop()
 {   /* Stop fan  */
-    _runningState = false;
+    _runningState = FanState::Stop;
     ledcWrite(CHANNEL_NUMBER, 0);
+}
+void Fan::Toggle()
+{
+    if (_runningState == FanState::Running)
+        Stop();
+    else
+        Start();
 }
