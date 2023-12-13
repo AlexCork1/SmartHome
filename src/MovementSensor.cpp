@@ -27,7 +27,7 @@ void MovementSensor::Init(){
     pinMode(PIR_SENSOR_PIN, INPUT);
 
     // we will use isr approach
-    attachInterrupt(digitalPinToInterrupt(PIR_SENSOR_PIN), _ISR_MovementSensor, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(PIR_SENSOR_PIN), _ISR_MovementSensor, RISING);
 }
 void MovementSensor::Reset()
 {
