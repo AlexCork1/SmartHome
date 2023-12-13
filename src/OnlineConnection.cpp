@@ -55,6 +55,8 @@ void OnlineConnection::Loop(){
 
 /* Send message to MQTT server with specific topic */
 void OnlineConnection::Publish(const char* topic, const char* message){
+  Debug("Publish:\nTopic: "); Debugln(topic);
+  Debug("Message: "); Debugln(message);
   _client.publish(topic, message);
 }
 
