@@ -27,7 +27,9 @@ class Opening : public Device
     
     static constexpr char OPEN_COMMAND[] = "open";
     static constexpr char CLOSE_COMMAND[] = "close";
+    static constexpr char TOGGLE_COMMAND[] = "toggle";
 
     void Open();
     void Close();
+    void Toggle();
 };

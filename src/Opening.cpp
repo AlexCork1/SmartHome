@@ -3,6 +3,7 @@
 
 constexpr const char Opening::OPEN_COMMAND[];
 constexpr const char Opening::CLOSE_COMMAND[];
+constexpr const char Opening::TOGGLE_COMMAND[];
 
 /*###########################################################################################################################################*/
 /*
@@ -32,6 +33,9 @@ void Opening::Init(){
     ledcSetup(_channelNumber, FREQUENCY, RESOLUTION);
     ledcAttachPin(_pinNumber, _channelNumber);
     Close();
+
+    Debug("CLOSE:");Debugln(CLOSED_STATE);
+    Debug("OPEN:");Debugln(OPEN_STATE);
 }
 const char* Opening::Get_Current_State()
 {
@@ -44,6 +48,7 @@ void Opening::MQTT_Message_Subscribe(const String& message)
 {
     if (strcmp(message.c_str(), OPEN_COMMAND) == 0) Open();
     else if (strcmp(message.c_str(), CLOSE_COMMAND) == 0) Close();
+    else if (strcmp(message.c_str(), TOGGLE_COMMAND) == 0) Toggle();
 }
 
 /*###########################################################################################################################################*/
@@ -57,6 +62,12 @@ void Opening::MQTT_Message_Subscribe(const String& message)
 void Opening::Open()
 {
     _openingState = OpeningState::Open;
+    
+    //gradully opening door
+    for (uint32_t currentState = CLOSED_STATE; currentState < OPEN_STATE; currentState = currentState + 20){
+        ledcWrite(_channelNumber, currentState);
+        delay(30);
+    }
     ledcWrite(_channelNumber, OPEN_STATE);
 }
 
@@ -64,5 +75,18 @@ void Opening::Open()
 void Opening::Close()
 {
     _openingState = OpeningState::Closed;
+
+    //gradully closing door
+    for (uint32_t currentState = OPEN_STATE; currentState > CLOSED_STATE; currentState = currentState - 20){
+        ledcWrite(_channelNumber, currentState);
+        delay(30);
+    }
+
     ledcWrite(_channelNumber, CLOSED_STATE);
+}
+void Opening::Toggle(){
+    if (_openingState == OpeningState::Open)
+        Close();
+    else
+        Open();
 }
