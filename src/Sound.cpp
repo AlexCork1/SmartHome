@@ -1,5 +1,6 @@
 #include "../inc/Debug.h"
 #include "../inc/Sound.h"
+#include <ArduinoJson.h>
 
 
 /*###########################################################################################################################################*/
@@ -25,13 +26,37 @@ Sound::Sound(const char* topic, void (*mqtt_publish)(const char*, const char*)) 
 void Sound::Init()
 {
     melody_playing[0] = '\0'; // Initialize the array with an empty string
-    melody_playing_state = -1;
+    melody_playing_state = false;
 }
 /* return single LED state as String */
 const char* Sound::Get_Current_State()
-{
-    snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, melody_playing_state, melody_playing);
-    return jsonBuffer;
+{ // Calculate the capacity based on constants
+    const size_t capacity = JSON_ARRAY_SIZE(NUM_MELODIES) + NUM_MELODIES * JSON_OBJECT_SIZE(1) +
+                            NUM_MELODIES * (MAX_NAME_LENGTH + JSON_OBJECT_SIZE(1)) + 100;
+    
+    DynamicJsonDocument doc(capacity);
+
+    // Create an array for melody names
+    JsonArray melodies = doc.createNestedArray("melodies");
+
+    // Add each melody name to the array
+    for (int i = 0; i < NUM_MELODIES; ++i) 
+        melodies.add(melody_mappings[i].name);
+
+    // Add state and musicPlaying
+    doc["state"] = melody_playing_state;
+    doc["musicPlaying"] = melody_playing;
+
+    // Serialize the JSON document to a char array
+    static char buffer[capacity];
+    serializeJson(doc, buffer, sizeof(buffer));
+
+    // Return the serialized JSON
+    return buffer;
+
+    //old code
+    //snprintf(jsonBuffer, JSON_BUFFER_SIZE, JSON_FORMAT, melody_playing_state, melody_playing);
+    //return jsonBuffer;
 }
 
 /* callback function that will be called when message with MQTT_Get_topic() is received */
@@ -42,7 +67,7 @@ void Sound::MQTT_Message_Subscribe(const String& message)
     {
         if (message == melody_mappings[i].name)
         {
-            melody_playing_state = i;
+            melody_playing_state = true;
             strncpy(melody_playing, melody_mappings[i].name, sizeof(melody_playing) - 1);
             melody_playing[sizeof(melody_playing) - 1] = '\0'; // Ensure null-termination
 
@@ -51,7 +76,7 @@ void Sound::MQTT_Message_Subscribe(const String& message)
 
             Play_Melody(melody_mappings[i]);
 
-            melody_playing_state = -1;
+            melody_playing_state = false;
             melody_playing[0] = '\0'; // Reset the array
 
             //notify that we stoped playing music
