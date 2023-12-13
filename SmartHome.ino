@@ -58,6 +58,7 @@ volatile bool gasSensorDetectedChange;
 volatile bool buttonLeftDetectedChange;
 volatile bool buttonRightDetectedChange;
 volatile bool movementDetectedChange;
+volatile unsigned long movementStartMillis;
 
 /*###############################################################################################################*/
 /*
@@ -110,6 +111,7 @@ void Inits()
   gasSensorDetectedChange = false;
   buttonLeftDetectedChange = false;
   buttonRightDetectedChange = false;
+  movementStartMillis = millis();
 
   ESP32Timer ITimer0(0);
   // set timer 0 in microsecs
@@ -136,15 +138,12 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 
 
   //check if topic is to get all devices (usually done on client application start)
-  /*if (strcmp(topic, MQTT_TOPIC_ALL) == 0)
+  if (strcmp(topic, MQTT_TOPIC_INIT) == 0)
   {
     Debugln("All topic demand");
-    for (auto device : list_of_devices) 
-      connectToServer.Publish(
-        (device->Get_MQTT_topic() + String(MQTT_TOPIC_UPDATE_APPENDIX)).c_str(),
-        device->Get_Current_State());
+    for (auto device : list_of_devices) Publish(device->Get_MQTT_topic(), device->Get_Current_State());
     return;
-  }*/
+  }
 
   //find correct device for recevied message
   for (auto device : list_of_devices)
@@ -164,16 +163,13 @@ void MQTT_message_callback(char* topic, byte* messageByte, unsigned int length)
 
 //MQTT publish function
 void MQTT_register_topics(){
-  //connectToServer.RegisterTopic(MQTT_TOPIC_ALL);
-  //for(auto device : list_of_devices)
-  //  connectToServer.RegisterTopic(device->Get_MQTT_topic());
   connectToServer.RegisterTopic("/smarthome/primaryhome/+/");
 }
 
 void Publish(const char* topic, const char* message){
-    connectToServer.Publish(
-      (topic  + String(MQTT_TOPIC_UPDATE_APPENDIX)).c_str(),
-      message);
+    char fullTopic[100];
+    std::sprintf(fullTopic, "%s%s\0", topic, MQTT_TOPIC_UPDATE_APPENDIX);
+    connectToServer.Publish(fullTopic, message);
 }
 
 void inline Process_RFID(){
@@ -205,8 +201,15 @@ void inline Process_RightButton(){
 }
 void inline Process_Movement(){
   //check if movement was detected
-  if (movementDetectedChange == true){
-    Publish(movement.Get_MQTT_topic(), movement.Get_Current_State());
+  if (movementDetectedChange == true)
+  {
+    //simple time delay so that message isn't sent to often
+    unsigned long movementCurrentMillis = millis();
+    if ((movementCurrentMillis - movementStartMillis) >= 3000)
+    {
+      Publish(movement.Get_MQTT_topic(), movement.Get_Current_State());
+      movementStartMillis = movementCurrentMillis;
+    }
     movementDetectedChange = false;
   }
 }
@@ -264,17 +267,17 @@ void IRAM_ATTR ISR_GASSensor() {
 }
 void IRAM_ATTR ISR_ButtonLeft_Click() {
   if (buttonLeft.Read_State() == HIGH)
-    buttonLeft.Pressed();
-  else
     buttonLeft.Reset();
+  else
+    buttonLeft.Pressed();
   
   buttonLeftDetectedChange = true;
 }
 void IRAM_ATTR ISR_ButtonRight_Click() {
   if (buttonRight.Read_State() == HIGH)
-    buttonRight.Pressed();
-  else
     buttonRight.Reset();
+  else
+    buttonRight.Pressed();
   
   buttonRightDetectedChange = true;
 }
