@@ -17,7 +17,7 @@ Link to Keystudio SmartHome KS5009: [Keystudio SmartHome KS5009](https://wiki.ke
 
 ## Installation
 Clone this repository to your local machine.
-- Copy code (git clone [https://github.com/AlexCork1/SmartHome.git](https://github.com/AlexCork1/SmartHome.git))
+- Copy code (git clone https://github.com/AlexCork1/SmartHome.git)
 - Open in Arduino IDE or VS Code
 - Select Board: **ESP32 Dev Module**
 - Select Port
